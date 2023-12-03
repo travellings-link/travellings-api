@@ -1,7 +1,7 @@
 # Travellings-API
 [![wakatime](https://wakatime.com/badge/user/018c29a9-6bba-4290-b83c-e1d1582f0233/project/018c2b3a-a125-424a-af40-965603a6d04a.svg)](https://wakatime.com/badge/user/018c29a9-6bba-4290-b83c-e1d1582f0233/project/018c2b3a-a125-424a-af40-965603a6d04a)  
 New API For Travellings Project（Node.js + Express）  
-警告：此版本还未正式上线使用
+警告：此版本还未正式上线使用。开发阶段，不代表最终品质
 
 # 环境
 - Node.JS ≥ 18
