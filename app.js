@@ -10,7 +10,7 @@
 const chalk = require('chalk');
 const figlet = require('figlet');
 const express = require('express');
-const sql = require('./sqlConfig');
+const sql = require('./modules/sqlConfig');
 const compression = require('compression');
 const routes = require('./modules/router');
 
@@ -18,7 +18,7 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "1.7";
+global.version = "1.8";
 global.time = function() {
     return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }

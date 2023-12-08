@@ -21,9 +21,9 @@ router.get('/', async (req, res) => {
     });
 
     if (!web) {
-      res.status(404).json({ "success": false, "msg": "暂时没有状态为 RUN 的站点喵~" });
+      res.status(404).json({ success: false, msg: "暂时没有状态为 RUN 的站点喵~" });
     } else {
-      res.status(200).json({ "success": true, "data": [{ "id": web.indexs, "name": web.name, "url": web.link, "tag": web.tag }]});
+      res.status(200).json({ success: true, data: [{ id: web.indexs, name: web.name, url: web.link, tag: web.tag }]});
     }
   } catch (error) {
     console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
