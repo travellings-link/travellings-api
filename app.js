@@ -10,6 +10,7 @@
 const chalk = require('chalk');
 const figlet = require('figlet');
 const express = require('express');
+const sql = require('./sqlConfig');
 const compression = require('compression');
 const routes = require('./modules/router');
 
@@ -17,7 +18,7 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "1.5";
+global.version = "1.7";
 global.time = function() {
     return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }
@@ -34,7 +35,9 @@ app.use((req, res, next) => {
 app.listen(port, host, async () => {
     await figlet("Travellings API", function(err, data) {
         console.log(data);
-        console.log(`\nCopyright © 2023 Travellings Project. All rights reserved.（v${global.version}）\n`)
+        console.log(`\nCopyright © 2020－2023 Travellings Project. All rights reserved.（v${global.version}）\n`)
     });
     console.log(chalk.cyan(`[${global.time()}] [INFO] API Started at port ${port} on ${host}`));
 });
+
+sql.sync().catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库同步 + 错误处理

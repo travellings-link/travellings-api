@@ -7,7 +7,6 @@
 // By BLxcwg666 <huixcwg@gmail.com>
 
 const chalk = require("chalk");
-const sql = require('./sqlConfig');
 const express = require("express");
 const dotenv = require("dotenv").config();
 
@@ -19,6 +18,7 @@ router.all('/', (req, res) => {
 });
 
 router.use('/random', require('../routes/random'));  // random 路由
+router.use('/all', require('../routes/all'));  // all 路由
 
 // 未匹配的路由
 router.use((req, res) => {
@@ -31,5 +31,4 @@ router.use((err, req, res, next) => {
   res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
 });
 
-sql.sync().catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库错误
 module.exports = router;
