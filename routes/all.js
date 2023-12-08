@@ -20,7 +20,14 @@ router.get('/', async (req, res) => {
         if (status) {queryData.status = status.toUpperCase()};
         const queryOptions = {where: queryData};
 
-        if (limit) {queryOptions.limit = parseInt(limit, 10)};
+        if (limit) {
+          const limitValue = parseInt(limit, 10);
+          if (isNaN(limitValue)) {
+            return res.status(400).json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
+          }
+          queryOptions.limit = limitValue;
+        }
+
         const { count, rows } = await Web.findAndCountAll(queryOptions);
     
         const data = rows.map(web => ({
