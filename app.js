@@ -10,6 +10,7 @@
 const chalk = require('chalk');
 const figlet = require('figlet');
 const express = require('express');
+const moment = require('moment-timezone');
 const sql = require('./modules/sqlConfig');
 const compression = require('compression');
 const routes = require('./modules/router');
@@ -18,19 +19,18 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "1.8";
+global.version = "2.0";
 global.time = function() {
-    return new Date().toISOString().slice(0, 19).replace('T', ' ');
+    return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
 
-app.use('/', routes);
 app.use(compression());
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-  res.header('X-Powered-By', 'Travellings Project');
-  next();
-});
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('X-Powered-By', 'Travellings Project');
+    next();
+  });
+app.use('/', routes);
 
 app.listen(port, host, async () => {
     await figlet("Travellings API", function(err, data) {

@@ -14,7 +14,7 @@ const router = express.Router();
 
 // index 路由
 router.all('/', (req, res) => {
-  res.status(200).json({ success: true, msg: "Travellings API Running Nya~", version: version, time: `${global.time()} UTC` });
+  res.status(200).json({ success: true, msg: "你在看什么 ٩(๑`^´๑)۶~", version: version, time: `${global.time()} CST` });
 });
 
 router.use('/random', require('../routes/random'));  // random 路由
