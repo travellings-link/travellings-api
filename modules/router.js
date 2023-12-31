@@ -18,6 +18,7 @@ router.all('/', (req, res) => {
 });
 
 router.use('/random', require('../routes/random'));  // random 路由
+router.use('/action', require('../routes/action'));  // action 路由
 router.use('/all', require('../routes/all'));  // all 路由
 
 // 未匹配的路由

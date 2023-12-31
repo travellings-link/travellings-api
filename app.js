@@ -19,12 +19,13 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "2.0";
+global.version = "2.1";
 global.time = function() {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
 
 app.use(compression());
+app.use(express.json());
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('X-Powered-By', 'Travellings Project');
