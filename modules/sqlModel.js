@@ -10,7 +10,7 @@ const { DataTypes } = require('sequelize');
 const sql = require('./sqlConfig');
 
 const sqlModel = sql.define('webs', {
-  indexs: {
+  id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,

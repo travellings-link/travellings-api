@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
         const { count, rows } = await Web.findAndCountAll(queryOptions);
     
         const data = rows.map(web => ({
-          id: web.indexs,
+          id: web.id,
           name: web.name,
           status: web.status,
           url: web.link,
