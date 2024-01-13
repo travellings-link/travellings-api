@@ -62,14 +62,23 @@ router.get('/github/callback', async (req, res) => {
 
     // 创建 & 更新
     const user = await userModel.findOrCreate({
-      where: { user: userData.login },
-      defaults: {
-        user: userData.login,
-        token: encryptToken(accessToken, process.env.SAFETY_CUSTOM_KEY),
-        role: 'Guest',
-        lastLogin: global.time(),
-      },
-    });
+        where: { user: userData.login },
+        defaults: {
+          user: userData.login,
+          token: encryptToken(accessToken, process.env.SAFETY_CUSTOM_KEY),
+          role: 'Guest',
+          lastLogin: global.time(),
+        },
+      });
+      
+      const [foundUser, created] = user;
+      
+      if (!created) {
+        await foundUser.update({
+          token: encryptToken(accessToken, process.env.SAFETY_CUSTOM_KEY),
+          lastLogin: global.time(),
+        });
+      };
 
     res.send('Login successful!');
   } catch (error) {
