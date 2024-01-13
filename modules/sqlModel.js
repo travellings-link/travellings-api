@@ -9,7 +9,7 @@
 const { DataTypes } = require('sequelize');
 const sql = require('./sqlConfig');
 
-const sqlModel = sql.define('webs', {
+const webModel = sql.define('webs', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -17,7 +17,7 @@ const sqlModel = sql.define('webs', {
   },
   status: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   name: {
     type: DataTypes.STRING,
@@ -29,10 +29,36 @@ const sqlModel = sql.define('webs', {
   },
   tag: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   timestamps: false,
 });
 
-module.exports = sqlModel;
+const userModel = sql.define('users', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  user: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastLogin: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+}, {
+  timestamps: false,
+});
+
+module.exports = { webModel, userModel };

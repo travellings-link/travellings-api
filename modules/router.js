@@ -17,9 +17,14 @@ router.all('/', (req, res) => {
   res.status(200).json({ success: true, msg: "你在看什么 ٩(๑`^´๑)۶~", version: version, time: `${global.time()} CST` });
 });
 
-router.use('/random', require('../routes/random'));  // random 路由
-router.use('/action', require('../routes/action'));  // action 路由
-router.use('/all', require('../routes/all'));  // all 路由
+// 公共路由
+router.use('/all', require('../routes/public/all'));  // 所有站点
+router.use('/random', require('../routes/public/random'));  // 随机站点
+
+// 私有路由
+router.use('/login', require('../routes/private/login'));  // 登录
+// router.use('/logout', require('../routes/private/logout'));  // 登出
+router.use('/action', require('../routes/private/action'));  // 操作
 
 // 未匹配的路由
 router.use((req, res) => {

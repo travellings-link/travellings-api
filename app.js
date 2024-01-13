@@ -19,7 +19,7 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "2.2";
+global.version = "2.3";
 global.time = function() {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
@@ -38,7 +38,7 @@ app.listen(port, host, async () => {
         console.log(data);
         console.log(`\nCopyright © 2020－2023 Travellings Project. All rights reserved.（v${global.version}）\n`)
     });
+    console.log(chalk.cyan(`[${global.time()}] [INFO] 尝试连接到数据库...`))
+    await sql.sync().then(console.log(chalk.green(`[${global.time()}] [OK] 成功连接到数据库~ `))).catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库同步 + 错误处理
     console.log(chalk.cyan(`[${global.time()}] [INFO] API Started at port ${port} on ${host}`));
 });
-
-sql.sync().catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库同步 + 错误处理

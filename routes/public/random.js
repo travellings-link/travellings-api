@@ -9,13 +9,13 @@
 const chalk = require('chalk');
 const express = require("express");
 const { Sequelize } = require('sequelize');
-const Web = require('../modules/sqlModel');
+const { webModel } = require('../../modules/sqlModel');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const web = await Web.findOne({
+    const web = await webModel.findOne({
       where: { status: 'RUN' },
       order: Sequelize.literal('RAND()'),
     });

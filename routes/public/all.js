@@ -8,7 +8,7 @@
 
 const chalk = require('chalk');
 const express = require('express');
-const Web = require('../modules/sqlModel');
+const { webModel } = require('../../modules/sqlModel');
 
 const router = express.Router();
 
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
           queryOptions.limit = limitValue;
         }
 
-        const { count, rows } = await Web.findAndCountAll(queryOptions);
+        const { count, rows } = await webModel.findAndCountAll(queryOptions);
     
         const data = rows.map(web => ({
           id: web.id,

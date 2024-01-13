@@ -8,9 +8,10 @@
 
 const chalk = require('chalk');
 const express = require('express');
-const Web = require('../modules/sqlModel');
+const { webModel, userModel } = require('../../modules/sqlModel');
 
 const router = express.Router();
+const isAuthed = 
 
 // 暂时没想好放啥，就先放个 400
 router.get('/', async (req, res) => {
@@ -26,7 +27,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const newWeb = await Web.create({ name, link, tag, status });
+    const newWeb = await webModel.create({ name, link, tag, status });
     res.json({ success: true, msg: "添加好啦 ´･ᴗ･`", data: newWeb });
   } catch (error) {
     console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
@@ -43,7 +44,7 @@ router.put('/', async (req, res) => {
     }
   
     try {
-      const web = await Web.findByPk(id);
+      const web = await webModel.findByPk(id);
       if (web) {
         const oldWeb = { ...web.get() }; // 复制更新前的数据
   
@@ -76,7 +77,7 @@ router.delete('/', async (req, res) => {
   }
 
   try {
-    const web = await Web.findByPk(id);
+    const web = await webModel.findByPk(id);
     if (web) {
       await web.destroy();
       res.json({ success: true, msg: "删掉啦 ´･ᴗ･`" });
