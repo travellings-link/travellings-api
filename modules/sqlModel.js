@@ -54,7 +54,7 @@ const userModel = sql.define('users', {
     allowNull: false,
   },
   lastLogin: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: true,
   },
 }, {

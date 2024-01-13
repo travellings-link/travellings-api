@@ -65,7 +65,7 @@ router.get('/github/callback', async (req, res) => {
         where: { user: userData.login },
         defaults: {
           user: userData.login,
-          token: encryptToken(accessToken, process.env.SAFETY_CUSTOM_KEY),
+          token: encryptToken(code, process.env.SAFETY_CUSTOM_KEY),
           role: 'Guest',
           lastLogin: global.time(),
         },
