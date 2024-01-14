@@ -46,6 +46,7 @@ router.get('/github/callback', async (req, res) => {
       const getData = await axios.post(tokenURL, querystring.stringify(params), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'User-Agent': req.headers['user-agent'],
         },
       });
       
@@ -55,7 +56,8 @@ router.get('/github/callback', async (req, res) => {
       // 获取用户信息
       const getUserData = await axios.get('https://api.github.com/user', {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${accessToken}`,
+          'User-Agent': req.headers['user-agent'],
         },
       });
   
@@ -84,7 +86,7 @@ router.get('/github/callback', async (req, res) => {
           });
         };
   
-      res.cookie('_tlogin', cookie, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
+      res.cookie('_tlogin', cookie, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 });
       res.json('Login Successful')
     } catch (error) {
       console.log(chalk.red(`[${global.time()}] [ERROR]`, error));

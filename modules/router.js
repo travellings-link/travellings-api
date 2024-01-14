@@ -23,7 +23,7 @@ router.use('/random', require('../routes/public/random'));  // 随机站点
 
 // 私有路由
 router.use('/login', require('../routes/private/login'));  // 登录
-// router.use('/logout', require('../routes/private/logout'));  // 登出
+router.use('/logout', require('../routes/private/logout'));  // 登出
 router.use('/action', require('../routes/private/action'));  // 操作
 
 // 未匹配的路由

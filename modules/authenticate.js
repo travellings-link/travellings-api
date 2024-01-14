@@ -11,7 +11,7 @@ const { userModel } = require('../modules/sqlModel');
 
 const authenticate = async (req, res, next) => {
   try {
-    // const debug_cookie = req.cookies._tlogin;
+
     const userToken = base32.decode(req.cookies._tlogin);
 
     if (!userToken) {
@@ -34,7 +34,7 @@ const authenticate = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(chalk.red(`[${global.time()}] [ERROR]`, err));
+    console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
     res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
   }
 };

@@ -20,7 +20,7 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "2.6";
+global.version = "2.7";
 global.time = function() {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
@@ -31,6 +31,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('X-Powered-By', 'Travellings Project');
+    res.header('Access-Control-Allow-Credentials', 'true');
     next();
   });
 app.use('/', routes);
