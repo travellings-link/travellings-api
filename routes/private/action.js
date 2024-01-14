@@ -8,10 +8,11 @@
 
 const chalk = require('chalk');
 const express = require('express');
-const { webModel, userModel } = require('../../modules/sqlModel');
+const { webModel } = require('../../modules/sqlModel');
+const { authenticate } = require('../../modules/authenticate');
 
 const router = express.Router();
-const isAuthed = 
+router.use(authenticate);  // 鉴权
 
 // 暂时没想好放啥，就先放个 400
 router.get('/', async (req, res) => {

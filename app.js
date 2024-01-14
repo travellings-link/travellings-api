@@ -14,18 +14,20 @@ const moment = require('moment-timezone');
 const sql = require('./modules/sqlConfig');
 const compression = require('compression');
 const routes = require('./modules/router');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "2.5";
+global.version = "2.6";
 global.time = function() {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
 
 app.use(compression());
 app.use(express.json());
+app.use(cookieParser());
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('X-Powered-By', 'Travellings Project');

@@ -9,15 +9,10 @@ const dotenv = require('dotenv').config();
 
 function encryption(input, customKey) {
   const encryptInput = input + '@' + customKey;
-
-  // AES
   const aesCipher = crypto.createCipheriv('aes-256-cbc', crypto.randomBytes(32), crypto.randomBytes(16));
   let aesEncrypted = aesCipher.update(encryptInput, 'utf-8', 'hex');
   aesEncrypted += aesCipher.final('hex');
-
-  // BCrypt
   const bcryptHash = bcrypt.hashSync(aesEncrypted, 10);
-
   return bcryptHash;
 }
 
