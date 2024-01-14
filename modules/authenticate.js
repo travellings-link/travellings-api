@@ -6,6 +6,7 @@
 //
 // By BLxcwg666 <huixcwg@gmail.com>
 
+const chalk = require('chalk');
 const base32 = require('base32');
 const { userModel } = require('../modules/sqlModel');
 
