@@ -27,35 +27,33 @@ function randomString(length) {
 
 router.get('/', async (req, res) => {
 
-    const userToken = base32.decode(req.cookies._tlogin);
-
-    if (!userToken) {
+    if (!req.cookies._tlogin) {
         res.status(400).json({ success: false, msg: "你都没登录呢你注销什么 ヽ(‘⌒´メ)ノ" })
+    } else {
+        const userToken = base32.decode(req.cookies._tlogin);
+        const user = await userModel.findOne({
+            where: {
+              token: userToken,
+            },
+        });
+
+        if (!user) {
+            return res.status(401).json({ success: false, msg: "Token 无效或已过期 ┐(´-｀)┌" });
+         }
+     
+         const findToken = { where: { token: userToken } };
+         const updateToken = { token: Buffer.from(randomString(45)).toString('base64') };
+     
+         userModel.update(updateToken, findToken)
+         .then((result) => {
+             res.clearCookie('_tlogin');
+             res.status(200).json({ success: true, msg: "注销成功！" });
+         })
+         .catch((error) => {
+             console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+             res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });    
+         });
     }
-
-    const user = await userModel.findOne({
-        where: {
-          token: userToken,
-        },
-    });
-  
-    if (!user) {
-       return res.status(401).json({ success: false, msg: "Token 无效或已过期 ┐(´-｀)┌" });
-    }
-
-    const findToken = { where: { token: userToken } };
-    const updateToken = { token: Buffer.from(randomString(45)).toString('base64') };
-
-    userModel.update(updateToken, findToken)
-    .then((result) => {
-        res.clearCookie('_tlogin');
-        res.status(200).json({ success: true, msg: "注销成功！" });
-    })
-    .catch((error) => {
-        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
-        res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });    
-    });
-  
-})
+});
 
 module.exports = router;

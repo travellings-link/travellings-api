@@ -20,7 +20,7 @@ const app = express();
 const host = process.env.API_HOST;
 const port = process.env.API_PORT;
 
-global.version = "2.9";
+global.version = "3.0";
 global.time = function() {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }

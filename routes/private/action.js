@@ -13,11 +13,17 @@ const { authenticate } = require('../../modules/authenticate');
 
 const router = express.Router();
 router.use(authenticate);  // 鉴权
+function isInt(str) {
+  return /^\d+$/.test(str);
+}
 
-// 暂时没想好放啥，就先放个 400
 router.get('/:id', async (req, res) => {
-    const web = await webModel.findByPk(req.params.id);
-    res.status(200).json({ success: true, data: { id: web.id, name: web.name, link: web.link, status: web.status, tag: web.tag } });
+    if (!isInt(req.params.id) || !req.params.id) {
+      res.status(400).json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
+    } else {
+      const web = await webModel.findByPk(req.params.id);
+      res.status(200).json({ success: true, data: { id: web.id, name: web.name, link: web.link, status: web.status, tag: web.tag } });
+    }
 });
 
 // 添加站点

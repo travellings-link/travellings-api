@@ -22,6 +22,7 @@ router.use('/all', require('../routes/public/all'));  // 所有站点
 router.use('/random', require('../routes/public/random'));  // 随机站点
 
 // 私有路由
+router.use('/user', require('../routes/private/user'));  // 用户信息
 router.use('/login', require('../routes/private/login'));  // 登录
 router.use('/logout', require('../routes/private/logout'));  // 登出
 router.use('/action', require('../routes/private/action'));  // 操作
