@@ -29,7 +29,11 @@ app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://www.travellings.cn, https://list.travellings.cn');
+    const origin = req.headers.origin;
+    if (origin && origin.match(/^https?:\/\/([a-zA-Z0-9-]+\.)*travellings\.cn$/)) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
+    
     res.header('X-Powered-By', 'Travellings Project');
     res.header('Access-Control-Allow-Credentials', 'true');
     next();
