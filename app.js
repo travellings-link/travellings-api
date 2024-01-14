@@ -33,7 +33,8 @@ app.use((req, res, next) => {
     if (origin && origin.match(/^https?:\/\/([a-zA-Z0-9-]+\.)*travellings\.cn$/)) {
         res.header('Access-Control-Allow-Origin', origin);
     }
-    
+
+    res.header('Cache-Control', 'no-store');
     res.header('X-Powered-By', 'Travellings Project');
     res.header('Access-Control-Allow-Credentials', 'true');
     next();
