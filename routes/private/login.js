@@ -86,7 +86,7 @@ router.get('/github/callback', async (req, res) => {
           });
         };
   
-      res.cookie('_tlogin', cookie, { domain: '.travellings.cn', httpOnly: true, secure: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 });
+      res.cookie('_tlogin', cookie, { domain: 'list.travellings.cn', httpOnly: true, secure: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 });
       // res.status(200).json({ success: true, msg: "登录成功", data: { user: userData.login, token: cookie}})
       res.redirect('https://list.travellings.cn/');
     } catch (error) {
