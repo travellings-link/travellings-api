@@ -33,7 +33,7 @@ router.get('/github', (req, res) => {
 });
 
 router.get('/github/callback', async (req, res) => {
-    const tokenURL = 'https://github.com/login/oauth/access_token';
+    const tokenURL = 'https://gh-proxy.nyakori.tech/login/oauth/access_token';
     const { code } = req.query;
     const params = {
       client_id: clientID,
