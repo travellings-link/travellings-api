@@ -21,13 +21,13 @@ router.get('/', async (req, res) => {
     });
 
     if (!web) {
-      res.status(404).json({ success: false, msg: "暂时没有状态为 RUN 的站点喵~" });
+      res.json({ success: false, msg: "暂时没有状态为 RUN 的站点喵~" });
     } else {
-      res.status(200).json({ success: true, data: [{ id: web.id, name: web.name, url: web.link, tag: web.tag }]});
+      res.json({ success: true, data: [{ id: web.id, name: web.name, url: web.link, tag: web.tag }]});
     }
   } catch (error) {
     console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
-    res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+    res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
   }
 });
 

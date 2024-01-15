@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
         if (limit) {
           const limitValue = parseInt(limit, 10);
           if (isNaN(limitValue)) {
-            return res.status(400).json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
+            return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
           }
           queryOptions.limit = limitValue;
         }
@@ -40,10 +40,10 @@ router.get('/', async (req, res) => {
 
         let total = limit ? parseInt(limit, 10) : count;
   
-        res.status(200).json({ status: true, total: total, data: data });
+        res.json({ status: true, total: total, data: data });
     } catch (error) {
         console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
-        res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+        res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
   });  
 

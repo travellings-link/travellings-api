@@ -13,7 +13,7 @@ const { userModel } = require('../modules/sqlModel');
 const authenticate = async (req, res, next) => {
   try {
     if (!req.query.token) {
-      return res.status(401).json({ success: false, msg: "访问此目录需要 Token ヽ(‘⌒´メ)ノ" })
+      return res.json({ success: false, msg: "访问此目录需要 Token ヽ(‘⌒´メ)ノ" })
     }
     
     const userToken = base32.decode(req.query.token);
@@ -24,17 +24,17 @@ const authenticate = async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(401).json({ success: false, msg: "Token 无效或已过期 ┐(´-｀)┌" });
+      return res.json({ success: false, msg: "Token 无效或已过期 ┐(´-｀)┌" });
     }
 
     if (user.role !== '0') {
-      return res.status(403).json({ success: false, msg: "外来人，拒绝入内！￣へ￣" });
+      return res.json({ success: false, msg: "外来人，拒绝入内！￣へ￣" });
     }
 
     next();
   } catch (error) {
     console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
-    res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+    res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
   }
 };
 
