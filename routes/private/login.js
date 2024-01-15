@@ -54,7 +54,7 @@ router.get('/github/callback', async (req, res) => {
       const accessToken = querystring.parse(data).access_token;
   
       // 获取用户信息
-      const getUserData = await axios.get('https://api.github.com/user', {
+      const getUserData = await axios.get('https://gh-api.nyakori.tech/user', {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'User-Agent': req.headers['user-agent'],
