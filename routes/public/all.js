@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
         if (limit) {
           const limitValue = parseInt(limit, 10);
           if (isNaN(limitValue)) {
-            res.status(400).json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
+            return res.status(400).json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
           }
           queryOptions.limit = limitValue;
         }
