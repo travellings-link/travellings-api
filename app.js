@@ -37,6 +37,7 @@ app.use((req, res, next) => {
     res.header('Cache-Control', 'no-store');
     res.header('X-Powered-By', 'Travellings Project');
     res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');    
     next();
   });
 app.use('/', routes);
