@@ -12,11 +12,11 @@ const { userModel } = require('../modules/sqlModel');
 
 const authenticate = async (req, res, next) => {
   try {
-    if (!req.headers['token']) {
-      return res.status(401).json({ success: false, msg: "你还没登录呢 ヽ(‘⌒´メ)ノ" })
+    if (!req.query.token) {
+      return res.status(401).json({ success: false, msg: "访问此目录需要 Token ヽ(‘⌒´メ)ノ" })
     }
     
-    const userToken = base32.decode(req.headers['token']);
+    const userToken = base32.decode(req.query.token);
     const user = await userModel.findOne({
       where: {
         token: userToken,

@@ -15,10 +15,10 @@ const { userModel } = require('../../modules/sqlModel');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    if (!req.cookies._tlogin) {
+    if (!req.query.token) {
         res.status(200).json({ success: true, msg: "未登录用户", data: { id: null, user: null, role: 2 } })
     } else {
-        const userToken = base32.decode(req.cookies._tlogin);
+        const userToken = base32.decode(req.query.token);
         const userInfo = await userModel.findOne({ attributes: ['id', 'user', 'role'], where: { token: userToken } });
         if (!userInfo) {
             res.status(200).json({ success: true, msg: "Token 无效或已过期", data: { id: null, user: null, role: 2 } });

@@ -27,10 +27,10 @@ function randomString(length) {
 
 router.get('/', async (req, res) => {
 
-    if (!req.headers['token']) {
+    if (!req.query.token) {
         res.status(400).json({ success: false, msg: "你都没带 Token 你跑来注销什么 ヽ(‘⌒´メ)ノ" })
     } else {
-        const userToken = base32.decode(req.headers['token']);
+        const userToken = base32.decode(req.query.token);
         const user = await userModel.findOne({
             where: {
               token: userToken,
