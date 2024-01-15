@@ -27,10 +27,10 @@ function randomString(length) {
 
 router.get('/', async (req, res) => {
 
-    if (!req.cookies._tlogin) {
-        res.status(400).json({ success: false, msg: "你都没登录呢你注销什么 ヽ(‘⌒´メ)ノ" })
+    if (!req.headers['token']) {
+        res.status(400).json({ success: false, msg: "你都没带 Token 你跑来注销什么 ヽ(‘⌒´メ)ノ" })
     } else {
-        const userToken = base32.decode(req.cookies._tlogin);
+        const userToken = base32.decode(req.headers['token']);
         const user = await userModel.findOne({
             where: {
               token: userToken,
@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
      
          userModel.update(updateToken, findToken)
          .then((result) => {
-             res.clearCookie('_tlogin');
+            //  res.clearCookie('_tlogin');
              res.status(200).json({ success: true, msg: "注销成功！" });
          })
          .catch((error) => {

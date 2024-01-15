@@ -85,10 +85,8 @@ router.get('/github/callback', async (req, res) => {
             lastLogin: global.time(),
           });
         };
-  
-      res.cookie('_tlogin', cookie, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 });
-      // res.status(200).json({ success: true, msg: "登录成功", data: { user: userData.login, token: cookie}})
-      res.redirect('https://list.travellings.cn/');
+        // res.status(200).json({ success: true, msg: "登录成功", data: { user: userData.login, token: cookie}})
+      res.redirect(`https://list.travellings.cn/user/oauth.html?token=${cookie}`);
     } catch (error) {
       console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
       res.status(401).json({ success: false, msg: "登录失败", error: error.message });
