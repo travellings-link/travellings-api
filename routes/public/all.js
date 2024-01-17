@@ -36,6 +36,7 @@ router.get('/', async (req, res) => {
           status: web.status,
           url: web.link,
           tag: web.tag,
+          failedReason: web.failedReason,
         }));
 
         let total = limit ? parseInt(limit, 10) : count;

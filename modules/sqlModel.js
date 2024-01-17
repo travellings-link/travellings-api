@@ -1,4 +1,4 @@
-// ____   ___  _          __  __           _      _ 
+//  ____   ___  _          __  __           _      _ 
 // / ___| / _ \| |        |  \/  | ___   __| | ___| |
 // \___ \| | | | |   _____| |\/| |/ _ \ / _` |/ _ \ |
 //  ___) | |_| | |__|_____| |  | | (_) | (_| |  __/ |
@@ -28,6 +28,10 @@ const webModel = sql.define('webs', {
     allowNull: false,
   },
   tag: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  failedReason: {
     type: DataTypes.STRING,
     allowNull: true,
   },
