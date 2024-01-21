@@ -11,8 +11,10 @@ const base32 = require('base32');
 const { userModel } = require('../modules/sqlModel');
 
 const authenticate = async (req, res, next) => {
+  const ip = req.headers['x-forwarded-for'] || req.ip;
   try {
     if (!req.query.token) {
+      console.log(chalk.yellow(`[${global.time()}] [WARNING] Authorization failed from ${ip}：No Token`));
       return res.json({ success: false, msg: "访问此目录需要 Token ヽ(‘⌒´メ)ノ" })
     }
     
@@ -24,10 +26,12 @@ const authenticate = async (req, res, next) => {
     });
 
     if (!user) {
+      console.log(chalk.yellow(`[${global.time()}] [WARNING] Authorization failed from ${ip}：Invaild Token`));
       return res.json({ success: false, msg: "Token 无效或已过期 ┐(´-｀)┌" });
     }
 
     if (user.role !== '0') {
+      console.log(chalk.yellow(`[${global.time()}] [WARNING] Access Denied from ${ip}：Permissions Denied`));
       return res.json({ success: false, msg: "外来人，拒绝入内！￣へ￣" });
     }
 

@@ -17,14 +17,17 @@ function isInt(str) {
   return /^\d+$/.test(str);
 }
 
-
+// 获取
 router.get('/:id', async (req, res) => {
     if (!isInt(req.params.id) || !req.params.id) {
       return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
     }
-
-    const web = await webModel.findByPk(req.params.id);
-    res.json({ success: true, data: { id: web.id, name: web.name, link: web.link, status: web.status, tag: web.tag } });
+    try {
+      const web = await webModel.findByPk(req.params.id);
+      res.json({ success: true, data: { id: web.id, name: web.name, link: web.link, status: web.status, tag: web.tag } });  
+    } catch (error) {
+      res.json({ success: false, msg: "没找到捏 ╮(￣▽￣)╭"})
+    }
 });
 
 // 添加站点
@@ -49,7 +52,7 @@ router.post('/add', async (req, res) => {
       const existWeb = await webModel.findOne({ where: { link } });
 
       if (existWeb) {
-        console.log(chalk.yellow(`[${global.time()}] [WARNING] Received duplicate link: ${link}`));
+        console.log(chalk.yellow(`[${global.time()}] [WARNING] Received duplicate link: ${link} from ${ip}`));
         dupLinks.push({ id: existWeb.id, link });
         return null;
       }
