@@ -17,6 +17,7 @@ function isInt(str) {
   return /^\d+$/.test(str);
 }
 
+
 router.get('/:id', async (req, res) => {
     if (!isInt(req.params.id) || !req.params.id) {
       return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
@@ -28,20 +29,51 @@ router.get('/:id', async (req, res) => {
 
 // 添加站点
 router.post('/add', async (req, res) => {
-  const { name, link, tag = 'go', status = 'WAIT' } = req.body;
+  const webData = req.body;
+  const ip = req.headers['x-forwarded-for'] || req.ip;
 
-  if (!name || !link) {
-    return res.json({ success: false, msg: "至少应该告诉我名称（name）和链接（link）吧 ヽ(‘⌒´メ)ノ" });
+  if (!webData || !Array.isArray(webData) || webData.length === 0) {
+    return res.json({ success: false, msg: "每个 data 中都应该告诉我名称（name）和链接（link）吧 ٩(๑`^´๑)۶" });
   }
 
   try {
-    const newWeb = await webModel.create({ name, link, tag, status });
-    res.json({ success: true, msg: "添加好啦 ´･ᴗ･`", data: newWeb });
+    let dupLinks = [];
+    const newWebs = await Promise.all(webData.map(async ({ name, link, tag = 'go', status = 'WAIT' }) => {
+      if (!name || !link) {
+        // 跳过无效的 data
+        console.log(chalk.yellow(`[${global.time()}] [WARNING] Received invalid webData: ${JSON.stringify({ name, link})} from ${ip}`));
+        return null;
+      }
+
+      // 查重
+      const existWeb = await webModel.findOne({ where: { link } });
+
+      if (existWeb) {
+        console.log(chalk.yellow(`[${global.time()}] [WARNING] Received duplicate link: ${link}`));
+        dupLinks.push({ id: existWeb.id, link });
+        return null;
+      }
+
+      return await webModel.create({ name, link, tag, status });
+    }));
+
+    if (dupLinks.length > 0) {
+      return res.json({ success: false, msg: "请求中有些链接已经在数据库中了 ٩(๑`^´๑)۶", data: dupLinks });
+    }
+
+    const validWebs = newWebs.filter(web => web !== null);
+
+    if (validWebs.length > 0) {
+      res.json({ success: true, msg: "添加好啦 ´･ᴗ･`", data: validWebs });
+    } else {
+      res.json({ success: false, msg: "每个 data 中都应该告诉我名称（name）和链接（link）吧 ٩(๑`^´๑)۶" });
+    }
   } catch (error) {
     console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
     res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
   }
 });
+
 
 // 更新站点
 router.post('/edit', async (req, res) => {
