@@ -16,8 +16,8 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const queryData = { status: 'RUN' };
-    const tag = req.query;
-    if (tag) {queryData.tag = tag.toUpperCase()}
+    const queryTag = req.query;
+    if (queryTag) {queryData.tag = queryTag.toUpperCase()}
     const web = await webModel.findOne({
       where: queryData,
       order: Sequelize.literal('RAND()'),
