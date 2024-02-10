@@ -18,6 +18,7 @@ router.get('/', async (req, res) => {
     try {
         let queryData = {};
         if (status) {queryData.status = status.toUpperCase()};
+        if (tag) {queryData.tag = tag.toUpperCase()}
         const queryOptions = {where: queryData};
 
         if (limit) {
@@ -26,13 +27,6 @@ router.get('/', async (req, res) => {
             return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
           }
           queryOptions.limit = limitValue;
-        }
-
-        if (tag) {
-          if (typeof tag !== "string") {
-            return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" })
-          }
-          queryOptions.tag = tag;
         }
 
         const { count, rows } = await webModel.findAndCountAll(queryOptions);
