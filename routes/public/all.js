@@ -13,11 +13,12 @@ const { webModel } = require('../../modules/sqlModel');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const { status, limit } = req.query;
+    const { status, limit, tag } = req.query;
   
     try {
         let queryData = {};
         if (status) {queryData.status = status.toUpperCase()};
+        if (tag) {queryData.tag = tag.toUpperCase()}
         const queryOptions = {where: queryData};
 
         if (limit) {
