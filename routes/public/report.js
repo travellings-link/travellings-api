@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
                 if (!web) {
                     res.json({ success: false, msg: "没有找到指定的站点喵~" });
                 } else {
-                    await sendMessage(`<strong>接到新的站点投诉！</strong>\n\n 站点编号：${id} \n 站点名称：${web.name} \n 站点网址：${web.link} \n 投诉理由：${reason}\n\n<strong>IP：</strong>>${ip}\n<strong>User-Agent：${ua}</strong>>`);
+                    await sendMessage(`<strong>接到新的站点投诉！</strong>\n\n 站点编号：${id} \n 站点名称：${web.name} \n 站点网址：${web.link} \n 投诉理由：${reason}\n\n<strong>IP：</strong>${ip}\n<strong>User-Agent：${ua}</strong>`);
                     console.log(chalk.cyan(`[${global.time()}] [INFO] Received Report: ${ip} reported ${id}`));
                     res.json({ success: true, msg: "举报成功，感谢您的贡献（ '▿ ' ）"})
                 }
