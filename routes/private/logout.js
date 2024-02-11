@@ -27,11 +27,11 @@ function randomString(length) {
 
 router.get('/', async (req, res) => {
 
-    if (!req.query.token) {
+    if (!req.cookies._tlogin) {
         return res.json({ success: false, msg: "你都没带 Token 你跑来注销什么 ヽ(‘⌒´メ)ノ" })
     }
 
-    const userToken = base32.decode(req.query.token);
+    const userToken = base32.decode(req.cookies._tlogin);
     const user = await userModel.findOne({
         where: {
           token: userToken,
