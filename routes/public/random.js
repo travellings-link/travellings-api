@@ -8,20 +8,34 @@
 
 const chalk = require('chalk');
 const express = require("express");
-const { Sequelize } = require('sequelize');
+const { Sequelize, Op } = require('sequelize');
 const { webModel } = require('../../modules/sqlModel');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const web = await webModel.findOne({
-            where: { status: 'RUN' },
-            order: Sequelize.literal('RAND()'),
-        });
+        let web;
+        const tag = req.query.tag;
+
+        if (!tag) {
+            web = await webModel.findOne({
+                where: { status: 'RUN' },
+                order: Sequelize.literal('RAND()'),
+            });
+        } else {
+            web = await webModel.findOne({
+                where: {
+                    tag: {
+                        [Op.like]: `%${tag}%`
+                    }
+                },
+                order: Sequelize.literal('RAND()'),
+            });
+        }
 
         if (!web) {
-            res.json({ success: false, msg: "暂时没有状态为 RUN 的站点喵~" });
+            res.json({ success: false, msg: "暂时没有状态为 RUN 且该查询条件的站点喵~" });
         } else {
             res.json({ success: true, data: [{ id: web.id, name: web.name, url: web.link, tag: web.tag }]});
         }
