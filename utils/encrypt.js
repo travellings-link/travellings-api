@@ -12,8 +12,7 @@ function encryption(input, customKey) {
   const aesCipher = crypto.createCipheriv('aes-256-cbc', crypto.randomBytes(32), crypto.randomBytes(16));
   let aesEncrypted = aesCipher.update(encryptInput, 'utf-8', 'hex');
   aesEncrypted += aesCipher.final('hex');
-  const bcryptHash = bcrypt.hashSync(aesEncrypted, 10);
-  return bcryptHash;
+  return bcrypt.hashSync(aesEncrypted, 10);
 }
 
 module.exports = encryption;

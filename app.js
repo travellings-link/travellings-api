@@ -45,7 +45,7 @@ app.use('/', routes);
 app.listen(port, host, async () => {
     await figlet("Travellings API", function(err, data) {
         console.log(data);
-        console.log(`\nCopyright © 2020－2023 Travellings Project. All rights reserved.（v${global.version}）\n`)
+        console.log(`\nCopyright © 2020－2024 Travellings Project. All rights reserved.（v${global.version}）\n`)
     });
     console.log(chalk.cyan(`[${global.time()}] [INFO] 尝试连接到数据库...`))
     await sql.sync().then(console.log(chalk.green(`[${global.time()}] [OK] 成功连接到数据库~ `))).catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库同步 + 错误处理
