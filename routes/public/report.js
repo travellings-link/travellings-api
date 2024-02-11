@@ -6,6 +6,7 @@
 //
 // By linlinzzo <812568734@qq.com>
 
+const axios = require('axios');
 const chalk = require('chalk');
 const FormData = require('form-data');
 const { sendMessage } = require('../../modules/push');
