@@ -7,6 +7,7 @@
 // By linlinzzo <812568734@qq.com>
 
 const chalk = require('chalk');
+const FormData = require('form-data');
 const { sendMessage } = require('../../modules/push');
 const express = require('express');
 const { webModel } = require('../../modules/sqlModel');
