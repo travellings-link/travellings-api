@@ -20,6 +20,7 @@ router.all('/', (req, res) => {
 // 公共路由
 router.use('/all', require('../routes/public/all'));  // 所有站点
 router.use('/random', require('../routes/public/random'));  // 随机站点
+router.use('/report', require('../routes/public/report'));  // 举报站点
 
 // 私有路由
 router.use('/user', require('../routes/private/user'));  // 用户信息
