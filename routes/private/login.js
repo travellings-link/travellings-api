@@ -89,7 +89,8 @@ router.get('/github/callback', async (req, res) => {
       res.cookie('_tlogin', cookie, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        domain: '.travellings.cn'
+        domain: '.travellings.cn',
+        sameSite: 'none'
       });
 
       res.redirect(`https://list.travellings.cn/`);
