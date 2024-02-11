@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     const { id, reason, vk } = req.body;
-    const ip = req.headers['x-forwarded-for'] || req.ip;
+    const ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : req.ip;
     const ua = req.headers['user-agent'];
 
     if (vk) {
