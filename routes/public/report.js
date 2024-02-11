@@ -21,26 +21,20 @@ router.post('/', async (req, res) => {
     const ua = req.headers['user-agent'];
 
     if (vk) {
-        let formData = new FormData();
-        formData.append('secret', process.env.CF_SECRET_KEY);
-        formData.append('response', vk);
-        formData.append('remoteip', ip);
-
         const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
         const config = {
             method: 'post',
             url: url,
             headers: {
-                ...formData.getHeaders(),
+                'Content-Type': 'application/json',
             },
-            data: formData,
+            data: { secret: process.env.CF_SECRET_KEY, response: vk, remoteip: ip },
         };
 
         try {
             const response = await axios(config);
-            const outcome = response.data;
 
-            if (outcome.success) {
+            if (response.data.success) {
                 if (!id || !reason || isNaN(id)) {
                     return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
                 }
