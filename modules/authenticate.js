@@ -11,14 +11,14 @@ const base32 = require('base32');
 const { userModel } = require('../modules/sqlModel');
 
 const authenticate = async (req, res, next) => {
-  const ip = req.headers['x-forwarded-for'] || req.ip;
+  const ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : req.ip;
   try {
-    if (!req.query.token) {
+    if (!req.cookies._tlogin) {
       console.log(chalk.yellow(`[${global.time()}] [WARNING] Authorization failed from ${ip}：No Token`));
       return res.json({ success: false, msg: "访问此目录需要 Token ヽ(‘⌒´メ)ノ" })
     }
     
-    const userToken = base32.decode(req.query.token);
+    const userToken = base32.decode(req.cookies._tlogin);
     const user = await userModel.findOne({
       where: {
         token: userToken,

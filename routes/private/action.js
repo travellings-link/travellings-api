@@ -33,7 +33,7 @@ router.get('/:id', async (req, res) => {
 // 添加站点
 router.post('/add', async (req, res) => {
   const webData = req.body;
-  const ip = req.headers['x-forwarded-for'] || req.ip;
+  const ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : req.ip;
 
   if (!webData || !Array.isArray(webData) || webData.length === 0) {
     return res.json({ success: false, msg: "每个 data 中都应该告诉我名称（name）和链接（link）吧 ٩(๑`^´๑)۶" });
