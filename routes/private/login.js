@@ -91,7 +91,8 @@ router.get('/github/callback', async (req, res) => {
         secure: true,
         httpOnly: true,
         domain: '.travellings.cn',
-        sameSite: 'none'
+        sameSite: 'none',
+        path: '/'
       });
 
       res.redirect(`https://list.travellings.cn/`);
