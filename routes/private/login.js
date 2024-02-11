@@ -88,7 +88,7 @@ router.get('/github/callback', async (req, res) => {
         // res.json({ success: true, msg: "登录成功", data: { user: userData.login, token: cookie}})
       res.cookie('_tlogin', cookie, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: true;
+        secure: true,
         httpOnly: true,
         domain: '.travellings.cn',
         sameSite: 'none'
