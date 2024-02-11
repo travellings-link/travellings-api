@@ -26,15 +26,23 @@ router.post('/', async (req, res) => {
         formData.append('remoteip', ip);
 
         const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-        const result = await fetch(url, {
-            body: formData,
-            method: 'POST',
-        });
+        const config = {
+            method: 'post',
+            url: url,
+            headers: {
+                ...formData.getHeaders(),
+            },
+            data: formData,
+        };
 
-        const outcome = await result.json();
-        if (outcome.success) {
-            try {
-                if (!id || !reason || isNaN(id)) { return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" }); }
+        try {
+            const response = await axios(config);
+            const outcome = response.data;
+
+            if (outcome.success) {
+                if (!id || !reason || isNaN(id)) {
+                    return res.json({ success: false, msg: "有坏蛋，我不说是谁 ╭(╯^╰)╮~" });
+                }
 
                 const web = await webModel.findByPk(id);
 
@@ -45,16 +53,15 @@ router.post('/', async (req, res) => {
                     console.log(chalk.cyan(`[${global.time()}] [INFO] Received Report: ${ip} reported ${id}`));
                     res.json({ success: true, msg: "举报成功，感谢您的贡献（ '▿ ' ）"})
                 }
-
-            } catch (error){
-                console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
-                res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+            } else {
+                res.json({ success: false, msg: "验证失败" });
             }
-        } else {
-            res.json({ success: false, msg: "验证失败"})
+        } catch (error) {
+            console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+            res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
         }
     } else {
-        res.json({ success: false, msg: "验证失败"})
+        res.json({ success: false, msg: "验证失败" });
     }
 });
 
