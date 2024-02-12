@@ -47,7 +47,10 @@ router.get('/', async (req, res) => {
  
      userModel.update(updateToken, findToken)
      .then((result) => {
-        res.clearCookie('_tlogin');
+        res.clearCookie('_tlogin', {
+            domain: '.travellings.cn',
+            path: '/'
+        });
         res.json({ success: true, msg: "注销成功！" });
      })
      .catch((error) => {
