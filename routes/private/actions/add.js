@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
             if (issuesId) {
                 closeIssues(issuesId)
                     .catch(error => {
-                        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+                        console.log(chalk.yellow(`[${global.time()}] [WARNING]`, error));
                     });
             }
 
