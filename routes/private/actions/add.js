@@ -35,7 +35,10 @@ router.post('/', async (req, res) => {
 
             // 顺手关了 issues
             if (issuesId) {
-                await closeIssues(issuesId);
+                closeIssues(issuesId)
+                    .catch(error => {
+                        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+                    });
             }
 
             return newWeb;
