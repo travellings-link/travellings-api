@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const express = require('express');
 const { webModel } = require('../../../modules/sqlModel');
+const closeIssues = require('../../../utils/closeIssues');
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.post('/', async (req, res) => {
 
     try {
         let dupLinks = [];
-        const newWebs = await Promise.all(webData.map(async ({ name, link, tag = 'go', status = 'WAIT' }) => {
+        const newWebs = await Promise.all(webData.map(async ({ name, link, tag = 'go', status = 'WAIT', issuesId }) => {
             if (!name || !link) {
                 // 跳过无效的 data
                 console.log(chalk.yellow(`[${global.time()}] [WARNING] Received invalid webData: ${JSON.stringify({ name, link})} from ${ip}`));
@@ -30,7 +31,14 @@ router.post('/', async (req, res) => {
                 return null;
             }
 
-            return await webModel.create({ name, link, tag, status });
+            let newWeb = await webModel.create({ name, link, tag, status });
+
+            // 顺手关了 issues
+            if (issuesId) {
+                await closeIssues(issuesId);
+            }
+
+            return newWeb;
         }));
 
         if (dupLinks.length > 0) {
