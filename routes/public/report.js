@@ -8,7 +8,7 @@
 
 const axios = require('axios');
 const chalk = require('chalk');
-const FormData = require('form-data');
+const https = require("https");
 const { sendMessage } = require('../../modules/push');
 const express = require('express');
 const { webModel } = require('../../modules/sqlModel');
@@ -25,6 +25,7 @@ router.post('/', async (req, res) => {
         const config = {
             method: 'post',
             timeout: 30000,
+            httpsAgent: new https.Agent({ keepAlive: true }),
             url: url,
             headers: {
                 'Content-Type': 'application/json',
