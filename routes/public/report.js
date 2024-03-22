@@ -24,6 +24,7 @@ router.post('/', async (req, res) => {
         const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
         const config = {
             method: 'post',
+            timeout: 30000,
             url: url,
             headers: {
                 'Content-Type': 'application/json',
