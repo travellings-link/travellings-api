@@ -7,7 +7,6 @@
 //
 // By BLxcwg666 <huixcwg@gmail.com>
 
-const chalk = require('chalk');
 const express = require('express');
 const cluster = require('cluster');
 const log = require('./modules/logger');
@@ -28,10 +27,10 @@ global.time = function () {
 
 if (cluster.isPrimary) {
     // 主进程中检查数据库
-    console.log(chalk.cyan(`[${global.time()}] [INFO] 尝试连接到数据库...`))
+    log.info("尝试连接到数据库...", "APP")
     sql.sync()
         .then(() => {
-            console.log(chalk.green(`[${global.time()}] [OK] 成功连接到数据库~ `));
+            log.ok("成功连接到数据库~", "APP")
             // 复制线程
             for (let i = 0; i < numCPUs; i++) {
                 cluster.fork();
@@ -58,11 +57,11 @@ if (cluster.isPrimary) {
         
             app.use('/', routes);
             app.listen(port, host, async () => {
-                console.log(chalk.cyan(`[${global.time()}] [INFO] API Started at port ${port} on ${host}`));
+                log.info(`API Started at port ${port} on ${host}`, "APP")
             });
 
         })
-        .catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库同步 + 错误处理
+        .catch(err => log.err(err, "APP"));  // 数据库同步 + 错误处理
 
     cluster.on('exit', (worker, code, signal) => {
         log.warn(`线程 PID ${worker.process.pid} 已退出，代码：${code}`, "APP")
