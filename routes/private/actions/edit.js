@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const express = require('express');
 const { webModel } = require('../../../modules/sqlModel');
+const addLabel = require('../../../utils/addLabel');
 
 const router = express.Router();
 
@@ -26,6 +27,15 @@ router.post('/', async (req, res) => {
             const updatedWeb = web.get(); // 获取更新后的数据
 
             res.json({ success: true, msg: "修改完成 ´･ᴗ･`", data: { oldWeb, updatedWeb } });
+
+            // 顺手添加 label
+            if (issuesId) {
+                addLabel(issuesId)
+                    .catch(error => {
+                        console.log(chalk.yellow(`[${global.time()}] [WARNING]`, error));
+                    });
+            }
+
         } else {
             res.json({ success: false, msg: "没找到这个站点 -_-#" });
         }
