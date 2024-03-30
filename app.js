@@ -20,7 +20,7 @@ const cookieParser = require('cookie-parser');
 const host = process.env.API_HOST
 const port = process.env.API_PORT
 
-global.version = "5.3";
+global.version = "5.4";
 global.time = function () {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
