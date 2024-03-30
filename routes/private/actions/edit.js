@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const express = require('express');
 const { webModel } = require('../../../modules/sqlModel');
-const addLabel = require('../../../utils/addLabel');
+const setLabel = require('../../../utils/setLabel');
 
 const router = express.Router();
 
@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
 
             // 顺手添加 label
             if (issuesId) {
-                addLabel(issuesId)
+                setLabel(issuesId)
                     .catch(error => {
                         console.log(chalk.yellow(`[${global.time()}] [WARNING]`, error));
                     });
