@@ -8,46 +8,65 @@
 // By BLxcwg666 <huixcwg@gmail.com>
 
 const chalk = require('chalk');
-const figlet = require('figlet');
 const express = require('express');
+const cluster = require('cluster');
+const log = require('./modules/logger');
 const moment = require('moment-timezone');
+const routes = require('./modules/router');
 const sql = require('./modules/sqlConfig');
 const compression = require('compression');
-const routes = require('./modules/router');
+const numCPUs = require('os').cpus().length;
 const cookieParser = require('cookie-parser');
 
-const app = express();
-const host = process.env.API_HOST;
-const port = process.env.API_PORT;
+const host = process.env.API_HOST
+const port = process.env.API_PORT
 
 global.version = "5.2";
-global.time = function() {
+global.time = function () {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
 
-app.use(compression());
-app.use(express.json());
-app.use(cookieParser());
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (origin && origin.match(/^https?:\/\/([a-zA-Z0-9-]+\.)*travellings\.cn$/)) {
-        res.header('Access-Control-Allow-Origin', origin);
-    }
-
-    res.header('Cache-Control', 'no-store');
-    res.header('X-Powered-By', 'Travellings Project');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');    
-    next();
-  });
-app.use('/', routes);
-
-app.listen(port, host, async () => {
-    await figlet("Travellings API", function(err, data) {
-        console.log(data);
-        console.log(`\nCopyright © 2020－2024 Travellings Project. All rights reserved.（v${global.version}）\n`)
-    });
+if (cluster.isPrimary) {
+    // 主进程中检查数据库
     console.log(chalk.cyan(`[${global.time()}] [INFO] 尝试连接到数据库...`))
-    await sql.sync().then(console.log(chalk.green(`[${global.time()}] [OK] 成功连接到数据库~ `))).catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库同步 + 错误处理
-    console.log(chalk.cyan(`[${global.time()}] [INFO] API Started at port ${port} on ${host}`));
-});
+    sql.sync()
+        .then(() => {
+            console.log(chalk.green(`[${global.time()}] [OK] 成功连接到数据库~ `));
+            // 复制线程
+            for (let i = 0; i < numCPUs; i++) {
+                cluster.fork();
+            }
+
+            // 启动 API
+            const app = express();
+
+            app.use(compression());
+            app.use(express.json());
+            app.use(cookieParser());
+            app.use((req, res, next) => {
+                const origin = req.headers.origin;
+                if (origin && origin.match(/^https?:\/\/([a-zA-Z0-9-]+\.)*travellings\.cn$/)) {
+                    res.header('Access-Control-Allow-Origin', origin);
+                }
+        
+                res.header('Cache-Control', 'no-store');
+                res.header('X-Powered-By', 'Travellings Project');
+                res.header('Access-Control-Allow-Credentials', 'true');
+                res.header('Access-Control-Allow-Headers', 'Content-Type');
+                next();
+            });
+        
+            app.use('/', routes);
+            app.listen(port, host, async () => {
+                console.log(chalk.cyan(`[${global.time()}] [INFO] API Started at port ${port} on ${host}`));
+            });
+
+        })
+        .catch(err => console.log(chalk.red(`[${global.time()}] [ERROR]`, err)));  // 数据库同步 + 错误处理
+
+    cluster.on('exit', (worker, code, signal) => {
+        log.warn(`线程 PID ${worker.process.pid} 已退出，代码：${code}`, "APP")
+        log.info(`尝试启动新线程`, "APP")
+        cluster.fork(); // 重新启动子进程
+    });
+}
