@@ -8,11 +8,11 @@
 // By BLxcwg666 <huixcwg@gmail.com>
 
 const axios = require('axios');
-const chalk = require('chalk');
 const base32 = require('base32');
 const express = require('express');
 const dotenv = require('dotenv').config();
 const querystring = require('querystring');
+const log = require('../../modules/logger');
 const encryptToken = require('../../utils/encrypt');
 const { userModel } = require('../../modules/sqlModel');
 
@@ -89,7 +89,6 @@ router.get('/github/callback', async (req, res) => {
             lastLogin: global.time(),
           });
         };
-        // res.json({ success: true, msg: "登录成功", data: { user: userData.login, token: cookie}})
       res.cookie('_tlogin', cookie, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         secure: true,
@@ -101,7 +100,7 @@ router.get('/github/callback', async (req, res) => {
 
       res.redirect(`https://list.travellings.cn/`);
     } catch (error) {
-      console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+      log.err(error, "LOGIN")
       res.json({ success: false, msg: "登录失败", error: error.message });
     }
 });

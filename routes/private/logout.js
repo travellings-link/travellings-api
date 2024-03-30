@@ -7,9 +7,9 @@
 //
 // By BLxcwg666 <huixcwg@gmail.com>
 
-const chalk = require('chalk');
 const base32 = require('base32');
 const express = require('express');
+const log = require('../../modules/logger');
 const { userModel } = require('../../modules/sqlModel');
 
 const router = express.Router();
@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
         res.json({ success: true, msg: "注销成功！" });
      })
      .catch((error) => {
-        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+        log.err(error, "LOGOUT")
         res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });    
      });
 });

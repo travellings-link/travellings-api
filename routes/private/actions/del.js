@@ -1,5 +1,5 @@
-const chalk = require('chalk');
 const express = require('express');
+const log = require('../../../modules/logger');
 const { webModel } = require('../../../modules/sqlModel');
 
 const router = express.Router();
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
             res.json({ success: false, msg: "没找到这个站点 -_-#" });
         }
     } catch (error) {
-        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+        log.err(error, "ACTION")
         res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 });

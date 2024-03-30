@@ -1,5 +1,5 @@
-const chalk = require('chalk');
 const express = require('express');
+const log = require('../../../modules/logger');
 const { webModel } = require('../../../modules/sqlModel');
 const closeIssues = require('../../../utils/closeIssues');
 
@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
         const newWebs = await Promise.all(webData.map(async ({ name, link, tag = 'go', status = 'RUN', issuesId }) => {
             if (!name || !link) {
                 // 跳过无效的 data
-                console.log(chalk.yellow(`[${global.time()}] [WARNING] Received invalid webData: ${JSON.stringify({ name, link})} from ${ip}`));
+                log.warn(`Received invalid webData: ${JSON.stringify({ name, link})} from ${ip}`, "ACTION")
                 return null;
             }
 
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
             const existWeb = await webModel.findOne({ where: { link } });
 
             if (existWeb) {
-                console.log(chalk.yellow(`[${global.time()}] [WARNING] Received duplicate link: ${link} from ${ip}`));
+                log.warn(`Received duplicate link: ${link} from ${ip}`, "ACTION")
                 dupLinks.push({ id: existWeb.id, link });
                 return null;
             }
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
             if (issuesId) {
                 closeIssues(issuesId)
                     .catch(error => {
-                        console.log(chalk.yellow(`[${global.time()}] [WARNING]`, error));
+                        log.warn(error, "ACTION")
                     });
             }
 
@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
             res.json({ success: false, msg: "每个 data 中都应该告诉我名称（name）和链接（link）吧 ٩(๑`^´๑)۶" });
         }
     } catch (error) {
-        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+        log.err(error, "ACTION")
         res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 });

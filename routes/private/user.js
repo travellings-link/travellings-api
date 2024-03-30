@@ -7,7 +7,6 @@
 //
 // By BLxcwg666 <huixcwg@gmail.com>
 
-const chalk = require('chalk');
 const base32 = require('base32');
 const express = require('express');
 const { userModel } = require('../../modules/sqlModel');
@@ -26,6 +25,6 @@ router.get('/', async (req, res) => {
             res.json({ success: true, msg: "用户已登录", data: userInfo });
         }
     }
-})
-;
+});
+
 module.exports = router;
