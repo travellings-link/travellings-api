@@ -6,7 +6,7 @@
 //         
 // By BLxcwg666 <huixcwg@gmail.com>
 
-const chalk = require("chalk");
+const log = require('./logger');
 const express = require("express");
 const dotenv = require("dotenv").config();
 
@@ -35,7 +35,7 @@ router.use((req, res) => {
 
 // 错误处理
 router.use((err, req, res, next) => {
-  console.log(chalk.red(`[${global.time()}] [ERROR]`, err));
+  log.err(err, "ROUTER")
   res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
 });
 

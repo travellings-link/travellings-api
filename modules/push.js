@@ -9,7 +9,7 @@
 // By BLxcwg666 <huixcwg@gmail.com>
 // 2024/01/16 04:38 CST
 
-const chalk = require('chalk');
+const log = require('./logger');
 const { Telegraf } = require('telegraf');
 const dotenv = require('dotenv').config();
 
@@ -19,7 +19,7 @@ async function sendMessage(message) {
   try {
     await bot.telegram.sendMessage(process.env.BOT_CHATID, message, { parse_mode: 'HTML', disable_web_page_preview: true });
   } catch (error) {
-    console.log(chalk.red(`[${global.time()}] [TBOT] [ERROR]`, error))
+    log.err(error, "TBOT");
   }
 }
 
