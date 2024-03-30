@@ -7,10 +7,10 @@
 // By linlinzzo <812568734@qq.com>
 
 const axios = require('axios');
-const chalk = require('chalk');
 const https = require("https");
-const { sendMessage } = require('../../modules/push');
 const express = require('express');
+const log = require('../../modules/logger');
+const { sendMessage } = require('../../modules/push');
 const { webModel } = require('../../modules/sqlModel');
 
 const router = express.Router();
@@ -54,7 +54,7 @@ const router = express.Router();
 //                 res.json({ success: false, msg: "验证失败" });
 //             }
 //         } catch (error) {
-//             console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+//             log.err(error, "REPORT");
 //             res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
 //         }
 //     } else {
@@ -82,7 +82,7 @@ router.post('/', async (req, res) => {
             res.json({ success: true, msg: "举报成功，感谢您的贡献（ '▿ ' ）"})
         }
     } catch (error) {
-        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+        log.err(error, "REPORT");
         res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 });

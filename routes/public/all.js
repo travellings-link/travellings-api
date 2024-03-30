@@ -6,10 +6,10 @@
 //
 // By BLxcwg666 <huixcwg@gmail.com>
 
-const chalk = require('chalk');
 const express = require('express');
+const { Op } = require("sequelize");
+const log = require('../../modules/logger');
 const { webModel } = require('../../modules/sqlModel');
-const {Op} = require("sequelize");
 
 const router = express.Router();
 
@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
 
         res.json({ success: true, total: count, data: data });
     } catch (error) {
-        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+        log.err(error, "ALL");
         res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 });

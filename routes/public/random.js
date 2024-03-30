@@ -6,8 +6,8 @@
 //
 // By BLxcwg666 <huixcwg@gmail.com>
 
-const chalk = require('chalk');
 const express = require("express");
+const log = require('../../modules/logger');
 const { Sequelize, Op } = require('sequelize');
 const { webModel } = require('../../modules/sqlModel');
 
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
             res.json({ success: true, data: [{ id: web.id, name: web.name, url: web.link, tag: web.tag }]});
         }
     } catch (error) {
-        console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+        log.err(error, "RANDOM")
         res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 });
