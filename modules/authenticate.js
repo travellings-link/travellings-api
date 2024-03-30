@@ -6,7 +6,7 @@
 //
 // By BLxcwg666 <huixcwg@gmail.com>
 
-const chalk = require('chalk');
+const log = require('./logger');
 const base32 = require('base32');
 const { userModel } = require('../modules/sqlModel');
 
@@ -14,7 +14,7 @@ const authenticate = async (req, res, next) => {
   const ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : req.ip;
   try {
     if (!req.cookies._tlogin) {
-      console.log(chalk.yellow(`[${global.time()}] [WARNING] Authorization failed from ${ip}：No Token`));
+      log.warn(`Authorization failed from ${ip}：No Token`, "AUTH")
       return res.json({ success: false, msg: "访问此目录需要 Token ヽ(‘⌒´メ)ノ" })
     }
     
@@ -26,18 +26,18 @@ const authenticate = async (req, res, next) => {
     });
 
     if (!user) {
-      console.log(chalk.yellow(`[${global.time()}] [WARNING] Authorization failed from ${ip}：Invaild Token`));
+      log.warn(`Authorization failed from ${ip}：Invaild Token`, "AUTH");
       return res.json({ success: false, msg: "Token 无效或已过期 ┐(´-｀)┌" });
     }
 
     if (user.role !== '0') {
-      console.log(chalk.yellow(`[${global.time()}] [WARNING] Access Denied from ${ip}：Permissions Denied`));
+      log.warn(`Access Denied from ${ip}：Permissions Denied`, "AUTH")
       return res.json({ success: false, msg: "外来人，拒绝入内！￣へ￣" });
     }
 
     next();
   } catch (error) {
-    console.log(chalk.red(`[${global.time()}] [ERROR]`, error));
+    log.err(error, "AUTH")
     res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
   }
 };
