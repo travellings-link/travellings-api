@@ -16,10 +16,10 @@ const app = new App({
 
 async function closeIssues (id) {
     const octokit = await app.getInstallationOctokit(48087189);
-    await octokit.request(`POST /repos/travellings-link/travellings/issues/${id}/labels`, {
+    await octokit.request(`PUT /repos/travellings-link/travellings/issues/${id}/labels`, {
         labels: [
             '信息更改完成',
-          ],
+        ],
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         }
