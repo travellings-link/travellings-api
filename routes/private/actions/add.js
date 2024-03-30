@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
 
     try {
         let dupLinks = [];
-        const newWebs = await Promise.all(webData.map(async ({ name, link, tag = 'go', status = 'WAIT', issuesId }) => {
+        const newWebs = await Promise.all(webData.map(async ({ name, link, tag = 'go', status = 'RUN', issuesId }) => {
             if (!name || !link) {
                 // 跳过无效的 data
                 console.log(chalk.yellow(`[${global.time()}] [WARNING] Received invalid webData: ${JSON.stringify({ name, link})} from ${ip}`));
