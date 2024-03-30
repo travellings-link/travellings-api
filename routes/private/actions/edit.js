@@ -6,7 +6,7 @@ const addLabel = require('../../../utils/addLabel');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-    const { id, name, link, tag, status } = req.body;
+    const { id, name, link, tag, status, issuesId } = req.body;
 
     if (!id) {
         return res.json({ success: false, msg: "至少应该告诉我编号（id）吧 ヽ(‘⌒´メ)ノ" });
