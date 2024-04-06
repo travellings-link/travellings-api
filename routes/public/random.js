@@ -26,6 +26,7 @@ router.get('/', async (req, res) => {
         } else {
             web = await webModel.findOne({
                 where: {
+                    status: 'RUN',
                     tag: {
                         [Op.like]: `%${tag}%`
                     }
