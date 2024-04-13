@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
         if (web) {
             await web.destroy();
             // 清除缓存
-            const cacheKey = 'data:all';
+            const cacheKey = await redisClient.keys('data:*');
             redisClient.del(cacheKey);
             // 返回结果
             res.json({ success: true, msg: "删掉啦 ´･ᴗ･`" });

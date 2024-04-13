@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
 
         if (validWebs.length > 0) {
             // 清除缓存
-            const cacheKey = 'data:all';
+            const cacheKey = await redisClient.keys('data:*');
             redisClient.del(cacheKey);
             // 返回结果
             res.json({ success: true, msg: "添加好啦 ´･ᴗ･`", data: validWebs });

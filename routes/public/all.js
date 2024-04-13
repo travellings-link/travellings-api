@@ -26,11 +26,11 @@ router.get('/', async (req, res) => {
 
         if (cachedData) {
             // 找见了就直接返回
-            console.log('found data from redis');
+            // console.log('found data from redis');
             res.json({ success: true, total: JSON.parse(cachedData).length, data: JSON.parse(cachedData) });
         } else {
             // 没有就返回数据库中的
-            console.log('not found data from redis');
+            // console.log('not found data from redis');
             getDataFromDB(req, res, cacheKey, status, tag);
         }
     } catch (error) {

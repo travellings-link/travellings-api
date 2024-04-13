@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
             const updatedWeb = web.get(); // 获取更新后的数据
 
             // 清除缓存
-            const cacheKey = 'data:all';
+            const cacheKey = await redisClient.keys('data:*');
             redisClient.del(cacheKey);
             // 返回结果
             res.json({ success: true, msg: "修改完成 ´･ᴗ･`", data: { oldWeb, updatedWeb } });
