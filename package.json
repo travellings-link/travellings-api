@@ -1,4 +1,28 @@
 {
+  "name": "travellings-api",
+  "description": "[![wakatime](https://wakatime.com/badge/user/018c29a9-6bba-4290-b83c-e1d1582f0233/project/018c2b3a-a125-424a-af40-965603a6d04a.svg)](https://wakatime.com/badge/user/018c29a9-6bba-4290-b83c-e1d1582f0233/project/018c2b3a-a125-424a-af40-965603a6d04a)  \r New API For Travellings Project（Node.js + Express）  \r 不代表最终品质",
+  "version": "5.4.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node config.js",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/travellings-link/travellings-api.git"
+  },
+  "keywords": [
+    "api",
+    "express",
+    "travellings"
+  ],
+  "author": "BLxcwg666",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/travellings-link/travellings-api/issues"
+  },
+  "homepage": "https://github.com/travellings-link/travellings-api#readme",
   "dependencies": {
     "axios": "^1.6.5",
     "base32": "^0.0.7",
