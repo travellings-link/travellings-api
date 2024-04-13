@@ -17,6 +17,7 @@ const sql = require('./modules/sqlConfig');
 const compression = require('compression');
 const numCPUs = require('os').cpus().length;
 const cookieParser = require('cookie-parser');
+const redisClient = require('./modules/redisClient');
 
 const host = config.API_HOST;
 const port = config.API_PORT;
@@ -53,6 +54,11 @@ if (cluster.isPrimary) {
                 res.header('X-Powered-By', 'Travellings Project');
                 res.header('Access-Control-Allow-Credentials', 'true');
                 res.header('Access-Control-Allow-Headers', 'Content-Type');
+                next();
+            });
+
+            app.use(function (req, res, next) {  // 把 redis 对象交给其他路由
+                req.redisClient = redisClient;
                 next();
             });
         
