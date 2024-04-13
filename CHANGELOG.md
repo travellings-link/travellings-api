@@ -1,4 +1,4 @@
-# [5.4.0](https://github.com/travellings-link/travellings-api/compare/abb4de6d9b9af49a445434da035987c014e3bedc...v5.4.0) (2024-4-13)
+# [5.5.0](https://github.com/travellings-link/travellings-api/compare/abb4de6d9b9af49a445434da035987c014e3bedc...v5.4.0) (2024-4-13)
 
 
 ### Bug Fixes
