@@ -1,6 +1,7 @@
 const express = require('express');
 const log = require('../../../modules/logger');
 const { webModel } = require('../../../modules/sqlModel');
+const redisClient = require('../../../modules/redisClient');
 
 const router = express.Router();
 
@@ -15,6 +16,10 @@ router.post('/', async (req, res) => {
         const web = await webModel.findByPk(id);
         if (web) {
             await web.destroy();
+            // 清除缓存
+            const cacheKey = 'data:all';
+            redisClient.del(cacheKey);
+            // 返回结果
             res.json({ success: true, msg: "删掉啦 ´･ᴗ･`" });
         } else {
             res.json({ success: false, msg: "没找到这个站点 -_-#" });

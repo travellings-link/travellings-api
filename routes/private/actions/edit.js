@@ -2,6 +2,7 @@ const express = require('express');
 const log = require('../../../modules/logger');
 const setLabel = require('../../../utils/setLabel');
 const { webModel } = require('../../../modules/sqlModel');
+const redisClient = require('../../../modules/redisClient');
 
 const router = express.Router();
 
@@ -26,6 +27,10 @@ router.post('/', async (req, res) => {
 
             const updatedWeb = web.get(); // 获取更新后的数据
 
+            // 清除缓存
+            const cacheKey = 'data:all';
+            redisClient.del(cacheKey);
+            // 返回结果
             res.json({ success: true, msg: "修改完成 ´･ᴗ･`", data: { oldWeb, updatedWeb } });
 
             // 顺手添加 label
