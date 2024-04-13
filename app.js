@@ -9,6 +9,7 @@
 
 const express = require('express');
 const cluster = require('cluster');
+const config = require('./config');
 const log = require('./modules/logger');
 const moment = require('moment-timezone');
 const routes = require('./modules/router');
@@ -17,8 +18,8 @@ const compression = require('compression');
 const numCPUs = require('os').cpus().length;
 const cookieParser = require('cookie-parser');
 
-const host = process.env.API_HOST
-const port = process.env.API_PORT
+const host = config.API_HOST;
+const port = config.API_PORT;
 
 global.version = "5.4";
 global.time = function () {
