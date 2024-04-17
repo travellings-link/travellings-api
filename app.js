@@ -22,7 +22,7 @@ const redisClient = require('./modules/redisClient');
 const host = config.API_HOST;
 const port = config.API_PORT;
 
-global.version = "5.5";
+global.version = "5.5.1";
 global.time = function () {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
