@@ -98,7 +98,13 @@ router.get('/github/callback', async (req, res) => {
         path: '/'
       });
 
-      res.redirect(`https://list.travellings.cn/`);
+      const redirect = req.query.redirect_url;
+      if (!redirect) {
+        res.json({ success: true, msg: "Login Successful, redirect url is required" });
+      } else {
+        res.redirect(redirect);
+      }
+      
     } catch (error) {
       log.err(error, "LOGIN")
       res.json({ success: false, msg: "登录失败", error: error.message });
