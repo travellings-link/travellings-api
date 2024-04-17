@@ -23,6 +23,7 @@ const redirectURI = process.env.GH_CALLBACK_URL;
 
 router.get('/github', (req, res) => {
   const authURL = 'https://github.com/login/oauth/authorize';
+  global.redirect = req.query.redirect_url;
   const params = {
     client_id: clientID,
     redirect_uri: redirectURI,
@@ -98,13 +99,12 @@ router.get('/github/callback', async (req, res) => {
         path: '/'
       });
 
-      const redirect = req.query.redirect_url;
-      if (!redirect) {
+      if (!global.redirect) {
         res.json({ success: true, msg: "Login Successful, redirect url is required" });
       } else {
         res.redirect(redirect);
       }
-      
+
     } catch (error) {
       log.err(error, "LOGIN")
       res.json({ success: false, msg: "登录失败", error: error.message });

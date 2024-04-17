@@ -1,4 +1,13 @@
-# [5.5.0](https://github.com/travellings-link/travellings-api/compare/abb4de6d9b9af49a445434da035987c014e3bedc...v5.4.0) (2024-4-13)
+## [5.5.1](https://github.com/travellings-link/travellings-api/compare/v5.5.0...v5.5.1) (2024-4-17)
+
+
+### Features
+
+* redirect url ([a0ea3a6](https://github.com/travellings-link/travellings-api/commit/a0ea3a66455ce374199053f41cc98133e0148d19))
+
+
+
+# [5.5.0](https://github.com/travellings-link/travellings-api/compare/abb4de6d9b9af49a445434da035987c014e3bedc...v5.5.0) (2024-4-13)
 
 
 ### Bug Fixes
