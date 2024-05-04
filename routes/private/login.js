@@ -102,7 +102,7 @@ router.get('/github/callback', async (req, res) => {
       if (!global.redirect) {
         res.json({ success: true, msg: "Login Successful, redirect url is required" });
       } else {
-        res.redirect(redirect);
+        res.redirect(global.redirect);
       }
 
     } catch (error) {
