@@ -1,5 +1,5 @@
 ## Travellings-API
-[![wakatime](https://wakatime.com/badge/github/travellings-link/travellings-api.svg)](https://wakatime.com/badge/github/travellings-link/travellings-api)
+[![wakatime](https://wakatime.com/badge/github/travellings-link/travellings-api.svg)](https://wakatime.com/badge/github/travellings-link/travellings-api)  
 New API For Travellings Project（Node.js + Express）  
 不代表最终品质
 
