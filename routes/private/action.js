@@ -8,7 +8,6 @@
 
 const chalk = require('chalk');
 const express = require('express');
-const { webModel } = require('../../modules/sqlModel');
 const { authenticate } = require('../../modules/authenticate');
 
 const router = express.Router();
@@ -18,5 +17,6 @@ router.use('/', require('./actions/get'));  // 站点
 router.use('/add', require('./actions/add'));  // 添加站点
 router.use('/edit', require('./actions/edit'));  // 修改站点
 router.use('/del', require('./actions/del'));  // 删除站点
+router.use('/purgeCache', require('./actions/purgeCache'));  // 清除缓存
 
 module.exports = router;
