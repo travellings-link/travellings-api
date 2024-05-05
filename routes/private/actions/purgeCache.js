@@ -8,6 +8,7 @@ router.post('/', async (req, res) => {
     try {
         const cacheKey = await redisClient.keys('data:*');
         redisClient.del(cacheKey);
+        res.json({ success: true, msg: "清除完成 ( ´◔‸◔`)" });
     } catch (e) {
         log.err(e, "ACTION")
         res.json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
