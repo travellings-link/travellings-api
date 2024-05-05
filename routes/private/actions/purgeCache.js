@@ -4,7 +4,7 @@ const redisClient = require('../../../modules/redisClient');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.delete('/', async (req, res) => {
     try {
         const cacheKey = await redisClient.keys('data:*');
         redisClient.del(cacheKey);
