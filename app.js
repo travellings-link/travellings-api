@@ -28,6 +28,8 @@ global.time = function () {
 }
 
 if (cluster.isPrimary) {
+    console.log("    _____                    _ _ _                         _    ____ ___ \n  |_   _| __ __ ___   _____| | (_)_ __   __ _ ___        / \\  |  _ \\_ _|\n    | || '__/ _` \\ \\ / / _ \\ | | | '_ \\ / _` / __|_____ / _ \\ | |_) | | \n    | || | | (_| |\\ V /  __/ | | | | | | (_| \\__ \\_____/ ___ \\|  __/| | \n    |_||_|  \\__,_| \\_/ \\___|_|_|_|_| |_|\\__, |___/    /_/   \\_\\_|  |___|\n                                      |___/");
+    console.log(`\nCopyright © 2020－2024 Travellings Project. All rights reserved.（v${global.version}）\n`);
     // 主进程中检查数据库
     log.info("尝试连接到数据库...", "APP")
     sql.sync()
