@@ -38,7 +38,7 @@ router.get('/github/callback', async (req, res) => {
       return res.json({ success: false, msg: "Bad Request"})
     }
 
-    const tokenURL = 'https://gh-proxy.nyakori.tech/login/oauth/access_token';
+    const tokenURL = 'https://ghapi.xcnya.cn/login/oauth/access_token';
     const { code } = req.query;
     const params = {
       client_id: clientID,
@@ -59,7 +59,7 @@ router.get('/github/callback', async (req, res) => {
       const accessToken = querystring.parse(data).access_token;
   
       // 获取用户信息
-      const getUserData = await axios.get('https://gh-api.nyakori.tech/user', {
+      const getUserData = await axios.get('https://ghapi.xcnya.cn/user', {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'User-Agent': req.headers['user-agent'],

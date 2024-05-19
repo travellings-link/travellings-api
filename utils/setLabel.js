@@ -11,7 +11,7 @@ const { App } = require('octokit');
 const app = new App({
     appId: 849785,
     privateKey: fs.readFileSync(process.env.GH_PRIVATE_KEY),
-    baseUrl: 'https://gh-api.nyakori.tech'
+    baseUrl: 'https://ghapi.xcnya.cn'
 });
 
 async function closeIssues (id) {

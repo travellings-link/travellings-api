@@ -14,7 +14,7 @@ const config = {
     GH_PRIVATE_KEY: process.env.GH_PRIVATE_KEY || './data/privateKey.pem',
 
     // TG Bot
-    BOT_API: process.env.BOT_API || 'https://tgapi.nyakori.tech',
+    BOT_API: process.env.BOT_API || 'https://botapi.xcnya.cn',
     BOT_CHATID: process.env.BOT_CHATID || 5502448506,
 
     // Redis
