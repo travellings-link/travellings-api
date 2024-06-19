@@ -53,7 +53,7 @@ async function getDataFromDB(req, res, cacheKey, status, tag) {
 
     const queryOptions = { where: queryData };
 
-    const { count, rows} = await webModel.findAndCountAll(queryOptions);
+    const { rows } = await webModel.findAndCountAll(queryOptions);
 
     const data = rows.map(web => ({
         id: web.id,
