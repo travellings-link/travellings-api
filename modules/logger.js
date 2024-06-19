@@ -19,7 +19,7 @@ function time() {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
 
-const logPath = process.env.LOG_PATH || path.join(__dirname, './logs');
+const logPath = process.env.LOG_PATH || path.join(__dirname, './../logs');
 if (!fs.existsSync(logPath) && process.env.LOG_ENABLE === 'true') {
     fs.mkdirSync(logPath);
 }
