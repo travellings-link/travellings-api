@@ -29,7 +29,7 @@ router.use('/logout', require('../routes/private/logout'));  // 登出
 router.use('/action', require('../routes/private/action'));  // 操作
 
 // RSS
-router.use('/rss', require('../routes/rss/router'));  // 这一坨另起一个路由得了
+// router.use('/rss', require('../routes/rss/router'));  // 这一坨另起一个路由得了
 
 // 未匹配的路由
 router.use((req, res) => {
