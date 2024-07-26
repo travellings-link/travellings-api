@@ -65,4 +65,34 @@ const userModel = sql.define('users', {
   timestamps: false,
 });
 
-module.exports = { webModel, userModel };
+const rssModel = sql.define('rss', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  content: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastUpdate: {
+    type: DataTypes.TIME,
+    allowNull: true,
+  },
+  originLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  rssLink: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+}, {
+  timestamps: false,
+});
+
+module.exports = { webModel, userModel, rssModel };
