@@ -38,7 +38,7 @@ router.get('/github/callback', async (req, res) => {
       return res.json({ success: false, msg: "Bad Request"})
     }
 
-    const tokenURL = 'https://gh.xcnya.cn/login/oauth/access_token';
+    const tokenURL = 'https://rp.xcnya.cn/https://github.com/login/oauth/access_token';
     const { code } = req.query;
     const params = {
       client_id: clientID,
