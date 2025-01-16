@@ -30,14 +30,10 @@ router.post('/:repo', (req, res) => {
     return res.json({ success: false, msg: "至少要告诉我同步哪个仓库吧 (-`ェ´-╬)" });
   }
 
-  exec('git pull', { cwd: repoPath }, (error, stdout, stderr) => {
+  exec('git pull', { cwd: repoPath }, (error, stdout) => {
     if (error) {
-      log.err(`Failed to pull：${error}`, "SYNC")
-      return res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
-    }
-
-    if (stderr) {
-      log.err(`Failed to pull：${stderr}`, "SYNC")
+      log.err(`Failed to pull：${error}`, "SYNC");
+      log.err(`Output：${stdout}`, "SYNC");
       return res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 
