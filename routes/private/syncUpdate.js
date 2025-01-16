@@ -1,0 +1,48 @@
+//  ____                   
+// / ___| _   _ _ __   ___ 
+// \___ \| | | | '_ \ / __|
+//  ___) | |_| | | | | (__ 
+// |____/ \__, |_| |_|\___|
+//        |___/            
+//
+// By BLxcwg666 <huixcwg@gmail.com>
+
+const express = require('express');
+const dotenv = require("dotenv").config();
+const { exec } = require('child_process');
+const log = require('../../modules/logger');
+const { authenticate } = require('../../modules/authenticate');
+
+const router = express.Router();
+router.use(authenticate);  // 鉴权
+
+const repoPaths = {
+  www: process.env.WWW_PATH,
+  mlist: process.env.MLIST_PATH,
+};
+
+router.post('/:repo', (req, res) => {
+  const repoName = req.params.repo;
+  const repoPath = repoPaths[repoName];
+
+  if (!repoPath) {
+    return res.json({ success: false, msg: "至少要告诉我同步哪个仓库吧 (-`ェ´-╬)" });
+  }
+
+  exec('git pull', { cwd: repoPath }, (error, stdout, stderr) => {
+    if (error) {
+      log.err(`Failed to pull：${error}`, "SYNC")
+      res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+    }
+
+    if (stderr) {
+      log.err(`Failed to pull：${stderr}`, "SYNC")
+      res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+    }
+
+    log.ok(`Failed to pull：${stderr}`, "SYNC")
+    res.json({ success: true, msg: "同步成功 (*´▽`*)" });
+  });
+});
+
+module.exports = router;
