@@ -33,12 +33,12 @@ router.post('/:repo', (req, res) => {
   exec('git pull', { cwd: repoPath }, (error, stdout, stderr) => {
     if (error) {
       log.err(`Failed to pull：${error}`, "SYNC")
-      res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+      return res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 
     if (stderr) {
       log.err(`Failed to pull：${stderr}`, "SYNC")
-      res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
+      return res.status(500).json({ success: false, msg: "出错了呜呜呜~ 请检查控制台输出喵~" });
     }
 
     log.ok(`Sync successfully from ${ip}`, "SYNC")
