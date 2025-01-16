@@ -22,14 +22,14 @@ const redisClient = require('./modules/redisClient');
 const host = config.API_HOST;
 const port = config.API_PORT;
 
-global.version = "5.5.2";
+global.version = "5.5.3";
 global.time = function () {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
 }
 
 if (cluster.isPrimary) {
     console.log("    _____                    _ _ _                         _    ____ ___ \n  |_   _| __ __ ___   _____| | (_)_ __   __ _ ___        / \\  |  _ \\_ _|\n    | || '__/ _` \\ \\ / / _ \\ | | | '_ \\ / _` / __|_____ / _ \\ | |_) | | \n    | || | | (_| |\\ V /  __/ | | | | | | (_| \\__ \\_____/ ___ \\|  __/| | \n    |_||_|  \\__,_| \\_/ \\___|_|_|_|_| |_|\\__, |___/    /_/   \\_\\_|  |___|\n                                      |___/");
-    console.log(`\nCopyright © 2020－2024 Travellings Project. All rights reserved.（v${global.version}）\n`);
+    console.log(`\nCopyright © 2020－2025 Travellings Project. All rights reserved.（v${global.version}）\n`);
     // 主进程中检查数据库
     log.info("尝试连接到数据库...", "APP")
     sql.sync()

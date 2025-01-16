@@ -1,3 +1,35 @@
+## [5.5.3](https://github.com/travellings-link/travellings-api/compare/v5.5.2...v5.5.3) (2025-1-16)
+
+
+### Bug Fixes
+
+* /all data empty ([4670371](https://github.com/travellings-link/travellings-api/commit/467037155ee88ad381eab8e1f99396f3a2d8e611))
+* banner ([4d69afb](https://github.com/travellings-link/travellings-api/commit/4d69afb27379d9defa759bf0593e8f9817ee03db))
+* github proxy api url ([2ac325d](https://github.com/travellings-link/travellings-api/commit/2ac325d6f3c96be462a7401617a1fe3ba95cef5c))
+* **logger:** path ([fb89d69](https://github.com/travellings-link/travellings-api/commit/fb89d69ddd54a2371bd8b9ea8a80ce9b6c8c99ea))
+* **login:** auth url ([60629b6](https://github.com/travellings-link/travellings-api/commit/60629b6ba1a14eb40a8f19cc1ac50b3b0b85c57e))
+* **login:** change github oauth endpoint ([7fd8f8f](https://github.com/travellings-link/travellings-api/commit/7fd8f8fa7709b0b2d35b765636ef04ca60b41be5))
+* purge cache route ([50a0a80](https://github.com/travellings-link/travellings-api/commit/50a0a8051c2b970f3c072a3e7a630d16664a7ce4))
+* **purgeCache:** DELETE --> POST ([3e1c38a](https://github.com/travellings-link/travellings-api/commit/3e1c38ac5c08ec96c2aa2e8529802fe2944e99ef))
+* Reference Error ([dc4ef08](https://github.com/travellings-link/travellings-api/commit/dc4ef082aaa1d0122e56a1ba72d42798d6519701))
+* **sync:** success msg ([af27dc9](https://github.com/travellings-link/travellings-api/commit/af27dc9fab1c614b4ea01d6842d8fc35644898e8))
+* temp remove rss ([8a1b744](https://github.com/travellings-link/travellings-api/commit/8a1b7446bccd0d792e49dc90b7a51be73047955c))
+
+
+### Features
+
+* add lastManualCheck attribute in sql model ([3e41e29](https://github.com/travellings-link/travellings-api/commit/3e41e2969b6bc304936cfb29f1ad7fbd1c2d5bd0))
+* **all:** add lastManualCheck attribute in return value ([ac2d66f](https://github.com/travellings-link/travellings-api/commit/ac2d66fcbd46c837a8c2bb2dfd59c8afa7928968))
+* purge cache route ([10d1257](https://github.com/travellings-link/travellings-api/commit/10d1257284ed1ced91b6860e6bd76f2dc3cd526b))
+* sync repo changes from gtihub ([1abd444](https://github.com/travellings-link/travellings-api/commit/1abd444acb09db2dcbed922de4b166fa6c9f506b))
+
+
+### Reverts
+
+* 3e1c38a ([5446b0c](https://github.com/travellings-link/travellings-api/commit/5446b0ca3c1bb1ea9d258354c2273b9bc214ea4a))
+
+
+
 ## [5.5.2](https://github.com/travellings-link/travellings-api/compare/v5.5.0...v5.5.2) (2024-4-17)
 
 
