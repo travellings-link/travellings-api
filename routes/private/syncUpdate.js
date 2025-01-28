@@ -30,7 +30,6 @@ router.post('/:repo', async (req, res) => {
     return res.json({ success: false, msg: "至少要告诉我同步哪个仓库吧 (-`ェ´-╬)" });
   }
   
-  await exec(`git config --global --add safe.directory ${repoPath}`);
   exec('git pull', { cwd: repoPath }, (error, stdout) => {
     if (error) {
       log.err(`Failed to pull：${error}`, "SYNC");
