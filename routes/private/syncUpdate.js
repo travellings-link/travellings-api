@@ -21,7 +21,7 @@ const repoPaths = {
   mlist: process.env.MLIST_PATH,
 };
 
-router.post('/:repo', (req, res) => {
+router.post('/:repo', async (req, res) => {
   const repoName = req.params.repo;
   const repoPath = repoPaths[repoName];
   const ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : req.ip;
@@ -30,7 +30,7 @@ router.post('/:repo', (req, res) => {
     return res.json({ success: false, msg: "至少要告诉我同步哪个仓库吧 (-`ェ´-╬)" });
   }
   
-  exec(`git config --global --add safe.directory ${repoPath}`);
+  await exec(`git config --global --add safe.directory ${repoPath}`);
   exec('git pull', { cwd: repoPath }, (error, stdout) => {
     if (error) {
       log.err(`Failed to pull：${error}`, "SYNC");
