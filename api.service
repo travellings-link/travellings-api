@@ -1,0 +1,13 @@
+[Unit]
+Description=Travellings Node.JS API
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+Environment="HOME=/root"
+WorkingDirectory=/opt/api
+ExecStart=node app.js
+Restart=always
