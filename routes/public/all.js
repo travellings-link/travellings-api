@@ -66,7 +66,7 @@ async function getDataFromDB(req, res, cacheKey, status, tag) {
 		url: web.link,
 		tag: web.tag,
 		failedReason: web.failedReason,
-		lastManualCheck: web.lastManualCheck,
+		lastStatusRunTime  : web.lastStatusRunTime,
 	}));
 
 	// 写入 redis

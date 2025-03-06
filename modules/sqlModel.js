@@ -37,7 +37,7 @@ const webModel = sql.define(
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
-		lastManualCheck: {
+		lastStatusRunTime: {
 			type: DataTypes.DATE,
 			allowNull: true,
 		},
