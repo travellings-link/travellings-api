@@ -9,6 +9,7 @@
 // By BLxcwg666 <huixcwg@gmail.com>
 // 2024/01/16 04:38 CST
 
+const axios = require('axios');
 const log = require('./logger');
 const { Telegraf } = require('telegraf');
 const dotenv = require('dotenv').config();
@@ -17,7 +18,13 @@ const bot = new Telegraf(process.env.BOT_TOKEN, { telegram: { apiRoot: process.e
 
 async function sendMessage(message) {
   try {
-    await bot.telegram.sendMessage(process.env.BOT_CHATID, message, { parse_mode: 'HTML', disable_web_page_preview: true });
+    // await bot.telegram.sendMessage(process.env.BOT_CHATID, message, { parse_mode: 'HTML', disable_web_page_preview: true });
+    await axios.post(process.env.FEISHU_WEBHOOK, {
+      msg_type: "text",
+      content: {
+        text: message
+      }
+    });
   } catch (error) {
     log.err(error, "TBOT");
   }
