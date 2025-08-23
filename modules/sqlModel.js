@@ -37,8 +37,8 @@ const webModel = sql.define(
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
-		lastManualCheck: {
-			type: DataTypes.DATE,
+		isManualChecked: {
+			type: DataTypes.BOOLEAN,
 			allowNull: true,
 		},
 	},
