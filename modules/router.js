@@ -32,7 +32,7 @@ router.use('/action', require('../routes/private/action'));  // 操作
 // router.use('/rss', require('../routes/rss/router'));  // 这一坨另起一个路由得了
 
 // Sync
-router.use('/syncUpdate', require('../routes/private/syncUpdate'));  // Sync
+// router.use('/syncUpdate', require('../routes/private/syncUpdate'));  // Sync
 
 // 未匹配的路由
 router.use((req, res) => {
