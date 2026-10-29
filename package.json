@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "node config.js",
+    "start:random-mvp": "node mvp/random/index.js",
+    "test:random-mvp": "node --test tests/random/algorithm.test.js tests/random/http.test.js tests/random/database.test.js tests/random/cache.test.js tests/random/redis.test.js tests/random/mysql.test.js tests/random/mysqlTimeout.test.js tests/random/redisRaces.test.js",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "repository": {

@@ -31,6 +31,8 @@ New API For Travellings Project（Node.js + Express）
 }
 ```
 ## 规范
+独立 Hybrid Random MVP 的启动、只读数据库配置和统计接口见 [mvp/random/README.md](mvp/random/README.md)。
+
 其他路由详见 `routes` 目录  
 组件放在 `modules` 目录  
 工具（外置函数）放在 `utils` 目录  
