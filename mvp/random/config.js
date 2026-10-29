@@ -24,6 +24,11 @@ function readConfig(env = process.env) {
         cookieSecure: secure === 'true',
         maxInFlight: integer(env, 'RANDOM_MVP_MAX_IN_FLIGHT', 8, 1, 64),
         cacheTtlSeconds: integer(env, 'RANDOM_MVP_CACHE_TTL_SECONDS', 30, 1, 300),
+        resample: {
+            maxInFlight: integer(env, 'RANDOM_MVP_RESAMPLE_MAX_IN_FLIGHT', 1, 1, 4),
+            ratePerSecond: integer(env, 'RANDOM_MVP_RESAMPLE_RATE_PER_SECOND', 2, 1, 1000),
+            burst: integer(env, 'RANDOM_MVP_RESAMPLE_BURST', 2, 1, 1000),
+        },
         redis: {
             host: env.RANDOM_MVP_REDIS_HOST || '127.0.0.1',
             port: integer(env, 'RANDOM_MVP_REDIS_PORT', 6379, 1, 65535),

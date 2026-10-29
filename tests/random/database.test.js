@@ -35,7 +35,7 @@ test('the real Sequelize generator emits one bounded SELECT with the mainline fi
         return sequelize;
     });
     t.after(() => database.close());
-    assert.deepEqual(Object.keys(database).sort(), ['check', 'close', 'findCandidates', 'kind', 'prefetchCandidates']);
+    assert.deepEqual(Object.keys(database).sort(), ['check', 'close', 'findCandidates', 'kind', 'prefetchCandidates', 'resampleCandidates']);
     await database.findCandidates({ tag: 'blog' });
     assert.equal(queries.length, 1);
     assert.match(queries[0].sql, /^SELECT `id`, `name`, `link`, `tag` FROM `webs`/);
@@ -56,6 +56,38 @@ test('the real Sequelize generator emits one bounded SELECT with the mainline fi
     assert.equal(options.retry.max, 0);
     assert.equal(options.dialectOptions.multipleStatements, false);
     assert.equal(options.pool.max, 4);
+});
+
+test('Rolling Bloom resampling is one bounded read-only sample with the original tag semantics', async t => {
+    const queries = [];
+    const database = createReadOnlyDatabase(readConfig(env).database, (...args) => {
+        const sql = new Sequelize(...args);
+        sql.query = async (statement, options) => { queries.push({ statement, options }); return []; };
+        return sql;
+    });
+    t.after(() => database.close());
+    assert.equal(database.findUnvisited, undefined);
+    await database.resampleCandidates({ tag: "life' OR 1=1 --" });
+    assert.equal(queries.length, 1);
+    assert.match(queries[0].statement, /`status` = 'RUN'/);
+    assert.match(queries[0].statement, /^SELECT `id`, `name`, `link`, `tag` FROM `webs`/);
+    assert.match(queries[0].statement, /ORDER BY RAND\(\) LIMIT 64;/);
+    assert.equal(queries[0].options.type, QueryTypes.SELECT);
+    // Sequelize escapes the quote inside LIKE instead of interpreting it as SQL.
+    assert.ok(queries[0].statement.includes("`tag` LIKE '%life\\' OR 1=1 --%'"));
+    assert.doesNotMatch(queries[0].statement, /NOT IN|COUNT\(|OFFSET|INSERT|UPDATE|DELETE|CREATE|ALTER/);
+
+    await database.resampleCandidates({ tag: 'life' });
+    assert.equal(queries.length, 2);
+    assert.match(queries[1].statement, /`tag` LIKE '%life%'/);
+    await database.resampleCandidates();
+    assert.equal(queries.length, 3);
+    assert.doesNotMatch(queries[2].statement, /LIKE/);
+    for (const query of queries) {
+        assert.doesNotMatch(query.statement, /NOT IN|COUNT\(|OFFSET|INSERT|UPDATE|DELETE|CREATE|ALTER/);
+        assert.match(query.statement, /ORDER BY RAND\(\) LIMIT 64;/);
+        assert.equal(query.options.type, QueryTypes.SELECT);
+    }
 });
 
 test('each new connection must finish read-only and timeout initialization before being usable', async t => {

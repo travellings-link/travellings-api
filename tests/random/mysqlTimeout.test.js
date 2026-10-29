@@ -6,7 +6,8 @@ const net = require('node:net');
 const { Sequelize } = require('sequelize');
 const { createReadOnlyDatabase } = require('../../mvp/random/database');
 const { createGuardedMysql } = require('../../mvp/random/mysqlClient');
-const { createPrefetchSource } = require('../../modules/random/prefetch');
+const { createPrefetchSource, cacheKey } = require('../../modules/random/prefetch');
+const { emptyHistory, appendHistory, loadHistory, serializeHistory } = require('../../modules/random/history');
 const { RandomMetrics } = require('../../modules/random/metrics');
 const { createMvpApp } = require('../../mvp/random/app');
 const { MemoryCache } = require('./memoryCache');
@@ -33,13 +34,13 @@ function openDatabase(t, fault) {
     return { database, clients, sql };
 }
 
-function get(server, path = '/random') {
+function get(server, path = '/random', headers = {}) {
     return new Promise((resolve, reject) => {
-        http.get({ host: '127.0.0.1', port: server.address().port, path, agent: false }, response => {
+        http.get({ host: '127.0.0.1', port: server.address().port, path, headers, agent: false }, response => {
             let body = '';
             response.setEncoding('utf8');
             response.on('data', chunk => { body += chunk; });
-            response.on('end', () => resolve({ status: response.statusCode, body, json: () => JSON.parse(body) }));
+            response.on('end', () => resolve({ status: response.statusCode, headers: response.headers, body, json: () => JSON.parse(body) }));
         }).on('error', reject);
     });
 }
@@ -60,6 +61,65 @@ test('silent TCP query is destroyed, evicted from the pool, and replaced on reco
     assert.equal(rows[0].id, 1);
     assert.notEqual(clients.at(-1), oldClient);
     assert.equal(sql.connectionManager.pool.using, 0);
+});
+
+test('a warm-cache supplemental query destroys its stalled socket without resetting Bloom history, then recovers', { timeout: 5000 }, async t => {
+    const fault = await startMysqlFaultServer(t);
+    const { database, clients, sql } = openDatabase(t, fault);
+    await database.check();
+    const oldClient = clients.at(-1);
+    const cache = new MemoryCache();
+    const metrics = new RandomMetrics();
+    const history = emptyHistory();
+    for (let id = 10; id < 30; id++) appendHistory(history, id);
+    const batch = Array.from({ length: 8 }, (_, i) => ({ id: i + 10, name: 'seen site', link: 'https://seen.example', tag: 'blog' }));
+    cache.pools.set(cacheKey('blog'), { batches: [JSON.stringify(batch), JSON.stringify(batch)], expires: 30000 });
+    const candidateSource = createPrefetchSource({ cache, metrics, prefetchCandidates: database.prefetchCandidates });
+    const app = createMvpApp({ database, cache, candidateSource, metrics, logger });
+    const server = await new Promise(resolve => {
+        const listening = app.listen(0, '127.0.0.1', () => resolve(listening));
+    });
+    t.after(() => new Promise(resolve => server.close(resolve)));
+    const headers = { Cookie: `_tvl_mvp=${encodeURIComponent(serializeHistory(history, Math.floor(Date.now() / 1000)))}` };
+    fault.stallCandidates = true;
+    const failed = await get(server, '/random?tag=blog', headers);
+    assert.equal(failed.status, 503);
+    assert.equal(failed.headers['set-cookie'], undefined);
+    assert.equal(oldClient.stream.destroyed, true);
+    assert.equal(sql.connectionManager.pool.using, 0);
+    assert.equal(sql.connectionManager.pool.size, 0);
+    const failedStats = metrics.snapshot();
+    assert.equal(failedStats.random_resample_queries_total, 1);
+    assert.equal(failedStats.random_resample_errors_total, 1);
+    assert.equal(failedStats.random_fallback_total, 0);
+    assert.equal(failedStats.random_history_relaxations_total, 0);
+    assert.equal(failedStats.random_history_resets_total, 0);
+    assert.equal(failedStats.random_resample_unresolved_total, 0);
+    assert.equal(failedStats.random_prefetch_query_duration_seconds.count, 0);
+    assert.equal(failedStats.random_resample_query_duration_seconds.count, 1);
+    assert.equal(failedStats.random_cache_hits_total, 1);
+
+    fault.stallCandidates = false;
+    const recovered = await get(server, '/random?tag=blog', headers);
+    assert.equal(recovered.status, 200);
+    assert.equal(recovered.json().data[0].id, 1);
+    assert.notEqual(clients.at(-1), oldClient);
+    const rawState = recovered.headers['set-cookie'][0].split(';')[0].split('=').slice(1).join('=');
+    const updated = loadHistory(decodeURIComponent(rawState), Math.floor(Date.now() / 1000));
+    assert.equal(updated.n, 1);
+    assert.equal(updated.lastId, 1);
+    assert.equal(updated.current.has(1), true);
+    for (let id = 10; id < 30; id++) assert.equal(updated.previous.has(id), true);
+    assert.equal(Object.hasOwn(JSON.parse(decodeURIComponent(rawState)), 'ids'), false);
+    const finalStats = metrics.snapshot();
+    assert.equal(finalStats.random_cache_hits_total, 2);
+    assert.equal(finalStats.random_query_duration_seconds.count, 2);
+    assert.equal(finalStats.random_resample_query_duration_seconds.count, 2);
+    assert.equal(finalStats.random_resample_errors_total, 1);
+    assert.equal(finalStats.random_fallback_total, 0);
+    const candidateQueries = fault.queries.filter(statement => /ORDER BY RAND\(\)/.test(statement));
+    assert.equal(candidateQueries.length, 2);
+    assert.ok(candidateQueries.every(statement => /LIMIT 64;/.test(statement) && !/NOT IN|COUNT\(|OFFSET/.test(statement)));
 });
 
 test('a query queued behind a timed-out pool borrower obtains a new connection', { timeout: 5000 }, async t => {

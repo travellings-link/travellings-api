@@ -7,6 +7,7 @@ const { createRedisCache } = require('../../mvp/random/redis');
 const { createPrefetchSource, cacheKey } = require('../../modules/random/prefetch');
 const { RandomMetrics } = require('../../modules/random/metrics');
 const { start } = require('../../mvp/random/index');
+const { emptyHistory, appendHistory, serializeHistory } = require('../../modules/random/history');
 const { MemoryCache } = require('./memoryCache');
 
 const logger = { info() {}, error() {} };
@@ -271,4 +272,49 @@ test('R6: a draining source rejects new requests while allowing its admitted own
     await owner;
     await closing;
     assert.equal(queries, 1);
+});
+
+test('R6: disconnecting an HTTP client cannot bypass shutdown drain of an admitted supplemental sample', { timeout: 3000 }, async () => {
+    const entered = deferred(), sql = deferred();
+    const cache = new MemoryCache();
+    const events = [];
+    const history = emptyHistory();
+    for (let id = 1; id <= 20; id++) appendHistory(history, id);
+    cache.pools.set(cacheKey(), { batches: [JSON.stringify(sites().slice(0, 8))], expires: 30000 });
+    cache.close = async () => { cache.closed++; events.push('redis-closed'); };
+    let dbClosed = 0, prefetches = 0, resamples = 0;
+    const runtime = await start({ config: { host: '127.0.0.1', port: 0, database: {}, redis: { timeoutMs: 100 }, cacheTtlSeconds: 30 }, logger,
+        createDatabase: () => ({ kind: 'mock', check: async () => {},
+            prefetchCandidates: async () => { prefetches++; return sites(); },
+            resampleCandidates: async () => { resamples++; entered.resolve(); const result = await sql.promise; events.push('resample-completed'); return result; },
+            close: async () => { dbClosed++; events.push('mysql-closed'); } }),
+        createCache: () => cache,
+    });
+    const request = http.get({ host: '127.0.0.1', port: runtime.server.address().port, path: '/random', agent: false,
+        headers: { Cookie: `_tvl_mvp=${encodeURIComponent(serializeHistory(history, Math.floor(Date.now() / 1000)))}` } });
+    request.on('error', () => {});
+    let closing;
+    try {
+        await entered.promise;
+        request.destroy();
+        closing = runtime.close();
+        assert.equal(runtime.close(), closing);
+        let done = false;
+        closing.then(() => { done = true; });
+        await tick();
+        assert.equal(done, false);
+        assert.equal(cache.closed, 0);
+        assert.equal(dbClosed, 0);
+        assert.equal(prefetches, 0);
+        assert.equal(resamples, 1);
+        sql.resolve([sites()[20]]);
+        await closing;
+        assert.ok(events.indexOf('resample-completed') < events.indexOf('mysql-closed'));
+        assert.ok(events.indexOf('resample-completed') < events.indexOf('redis-closed'));
+        assert.equal(dbClosed, 1);
+        assert.equal(cache.closed, 1);
+    } finally {
+        request.destroy(); sql.resolve([sites()[20]]);
+        await (closing || runtime.close());
+    }
 });

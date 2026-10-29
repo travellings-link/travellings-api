@@ -51,6 +51,7 @@ function createReadOnlyDatabase(config, createSequelize = (...args) => new Seque
         kind: 'mysql',
         findCandidates: createCandidateSource(webModel),
         prefetchCandidates: createCandidateSource(webModel, { limit: PREFETCH_LIMIT }),
+        resampleCandidates: createCandidateSource(webModel, { limit: PREFETCH_LIMIT }),
         check: async () => {
             // Check table/column visibility and SELECT privilege without reading site rows.
             await sql.query('SELECT id, status, name, link, tag FROM webs LIMIT 0', { type: QueryTypes.SELECT });

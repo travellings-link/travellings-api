@@ -21,4 +21,10 @@ test('real MySQL: read-only session, timeout, table access, and bounded sampling
     assert.ok(candidates.length <= 8);
     assert.equal(new Set(candidates.map(candidate => candidate.id)).size, candidates.length);
     for (const candidate of candidates) assert.deepEqual(Object.keys(candidate).sort(), ['id', 'link', 'name', 'tag']);
+    const resampled = await database.resampleCandidates();
+    assert.ok(resampled.length <= 64);
+    assert.equal(new Set(resampled.map(candidate => candidate.id)).size, resampled.length);
+    for (const candidate of resampled) assert.deepEqual(Object.keys(candidate).sort(), ['id', 'link', 'name', 'tag']);
+    const escapedTag = await database.resampleCandidates({ tag: "__random_mvp_nonexistent_'_tag__" });
+    assert.ok(escapedTag.length <= 64);
 });

@@ -3,6 +3,7 @@ const { createReadOnlyDatabase } = require('./database');
 const { createMvpApp } = require('./app');
 const { createRedisCache } = require('./redis');
 const { createPrefetchSource } = require('../../modules/random/prefetch');
+const { createResampleSource } = require('../../modules/random/resample');
 const { RandomMetrics } = require('../../modules/random/metrics');
 
 async function start({ config = loadConfig(), createDatabase = createReadOnlyDatabase, createCache = createRedisCache, logger = console } = {}) {
@@ -10,6 +11,7 @@ async function start({ config = loadConfig(), createDatabase = createReadOnlyDat
     let cache;
     let server;
     let candidateSource;
+    let resampleSource;
     let stopping = false;
     try {
         await database.check();
@@ -26,13 +28,16 @@ async function start({ config = loadConfig(), createDatabase = createReadOnlyDat
             // the lease itself never serves as MySQL cancellation.
             lockMs: 10000 + (config.database.clientQueryTimeoutMs ?? 3000) * 3 + config.redis.timeoutMs * 4 + 2000,
         });
-        const app = createMvpApp({ database, cache, candidateSource, metrics, isDraining: () => stopping, cookieSecure: config.cookieSecure, maxInFlight: config.maxInFlight, logger });
+        resampleSource = createResampleSource({
+            resampleCandidates: query => database.resampleCandidates(query), metrics, ...config.resample, isDraining: () => stopping,
+        });
+        const app = createMvpApp({ database, cache, candidateSource, resampleSource, metrics, isDraining: () => stopping, cookieSecure: config.cookieSecure, maxInFlight: config.maxInFlight, logger });
         server = await new Promise((resolve, reject) => {
             const listening = app.listen(config.port, config.host, () => resolve(listening));
             listening.once('error', reject);
         });
     } catch (error) {
-        await candidateSource?.close();
+        await Promise.allSettled([candidateSource?.close(), resampleSource?.close()]);
         const cleanup = await Promise.allSettled([database.close(), cache?.close()]);
         for (const result of cleanup) {
             if (result.status === 'rejected') logger.error('Random MVP startup cleanup failed:', result.reason);
@@ -48,6 +53,7 @@ async function start({ config = loadConfig(), createDatabase = createReadOnlyDat
             if (!closing) {
                 stopping = true;
                 candidateSource.stopAccepting();
+                resampleSource.stopAccepting();
                 closing = (async () => {
                     const timeout = setTimeout(() => server.closeAllConnections?.(), 10000);
                     timeout.unref();
@@ -55,7 +61,7 @@ async function start({ config = loadConfig(), createDatabase = createReadOnlyDat
                     server.closeIdleConnections?.();
                     let results;
                     try {
-                        results = await Promise.allSettled([httpClosed, candidateSource.close()]);
+                        results = await Promise.allSettled([httpClosed, candidateSource.close(), resampleSource.close()]);
                     } finally {
                         clearTimeout(timeout);
                     }

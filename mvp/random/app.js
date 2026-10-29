@@ -4,10 +4,11 @@ const { createHybridRandomRouter } = require('../../routes/public/hybridRandom')
 const { RandomMetrics } = require('../../modules/random/metrics');
 const { BLOOM_BITS, BLOOM_HASHES } = require('../../modules/random/bloom');
 const { CANDIDATE_LIMIT } = require('../../modules/random/select');
-const { HISTORY_LIMIT, HISTORY_TTL_SECONDS } = require('../../modules/random/history');
+const { HISTORY_LIMIT, HISTORY_TTL_SECONDS, HISTORY_VERSION } = require('../../modules/random/history');
 const { measureCandidateQuery } = require('../../modules/random/source');
+const { createResampleSource } = require('../../modules/random/resample');
 
-function createMvpApp({ database, cache, candidateSource, isDraining = () => false, cookieSecure = false, maxInFlight = 8, metrics = new RandomMetrics(), logger = console }) {
+function createMvpApp({ database, cache, candidateSource, resampleSource, resample = {}, isDraining = () => false, cookieSecure = false, maxInFlight = 8, metrics = new RandomMetrics(), logger = console }) {
     const app = express();
     const startedAt = new Date().toISOString();
     const started = process.hrtime.bigint();
@@ -28,8 +29,12 @@ function createMvpApp({ database, cache, candidateSource, isDraining = () => fal
         next();
     });
 
+    const retrySource = resampleSource || createResampleSource({
+        resampleCandidates: query => database.resampleCandidates(query), metrics, isDraining, ...resample,
+    });
     app.use('/random', createHybridRandomRouter({
         findCandidates: candidateSource ? candidateSource.findCandidates : measureCandidateQuery(database.findCandidates, metrics),
+        resampleSource: retrySource,
         metrics,
         cookieName: '_tvl_mvp',
         cookieSecure,
@@ -68,10 +73,16 @@ function createMvpApp({ database, cache, candidateSource, isDraining = () => fal
             cache: candidateSource?.info || { enabled: false },
             algorithm: {
                 candidate_limit: CANDIDATE_LIMIT,
-                bloom_bits: BLOOM_BITS,
-                bloom_hashes: BLOOM_HASHES,
+                history_type: 'rolling-bloom',
+                fallback_policy: 'relax-history',
+                history_version: HISTORY_VERSION,
                 history_limit: HISTORY_LIMIT,
+                history_max_retained_visits: HISTORY_LIMIT * 2 - 1,
+                bloom_generations: 2,
+                bloom_bits_per_generation: BLOOM_BITS,
+                bloom_hashes: BLOOM_HASHES,
                 history_ttl_seconds: HISTORY_TTL_SECONDS,
+                resample: retrySource.info,
             },
             metrics: metrics.snapshot(),
         });
