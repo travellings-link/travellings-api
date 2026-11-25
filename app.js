@@ -22,6 +22,9 @@ const redisClient = require('./modules/redisClient');
 const host = config.API_HOST;
 const port = config.API_PORT;
 
+// 兜底：任何漏掉 catch 的 promise 只记日志，不再让进程退出
+process.on('unhandledRejection', (error) => log.err(error, 'APP'));
+
 global.version = "5.5.3";
 global.time = function () {
     return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');

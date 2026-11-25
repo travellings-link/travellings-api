@@ -7,7 +7,7 @@ const router = express.Router();
 router.delete('/', async (req, res) => {
     try {
         const cacheKey = await redisClient.keys('data:*');
-        redisClient.del(cacheKey);
+        if (cacheKey.length) await redisClient.del(cacheKey);
         res.json({ success: true, msg: "清除完成 ( ´◔‸◔`)" });
     } catch (e) {
         log.err(e, "ACTION")
